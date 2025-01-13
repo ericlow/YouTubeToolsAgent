@@ -1,0 +1,15 @@
+Here is a concise summary of the key points and main takeaways from the video transcript:
+
+- The speaker initially struggled greatly with coding interview problems on LeetCode, spending hours without making progress on even "medium" difficulty problems. This led to frustration and disappointment.
+
+- He emphasizes the importance of starting with easier LeetCode problems first to build up skills and confidence before tackling medium/harder problems. Attempting medium problems too early can demotivate and prevent effective learning.
+
+- When approaching a new problem, separate the process into 1) Clearly thinking through the solution approach first, without writing code, and 2) Then coding up the solution. Don't try to think and code simultaneously.
+
+- For practice, time-box problems to around 1 hour. If no progress after that, study other people's solutions rather than getting stuck too long on one problem.
+
+- Always study the top-voted solutions, even if you solved the problem, as there may be better/more optimal approaches to learn.
+
+- To know if ready for interviews, the key is being able to consistently solve LeetCode medium problems within 30-35 minutes, which requires strong data structures and algorithms fundamentals.
+
+The main takeaways are using a strategic approach to LeetCode practice, separating solution thinking from coding, time-boxing problems, studying top solutions, and achieving medium problem solving proficiency as an interview readiness benchmark.

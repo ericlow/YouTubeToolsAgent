@@ -1,0 +1,247 @@
+Transcript for: Unknown Title
+
+[00:00] Coding Interviews are very easy.
+[00:01] That’s what I thought
+[00:02] when I went to Leetcode
+[00:03] and attempted this “Rotate Array” as my very first problem
+[00:05] After spending 6 hours on it
+[00:07] I had not written a single line of code.
+[00:11] I was extremely frustrated
+[00:12] and went to the discussion section to
+read the most upvoted solution
+[00:15] Another 2 hours passed
+[00:17] and I could not even figure out why this solution works.
+[00:19] At this point,
+[00:20] my frustration had transformed into disappointment
+[00:23] I somehow managed to put myself to sleep that night
+[00:27] and the next morning,
+[00:28] I went to a friend and asked him
+to solve the exact same question.
+[00:31] And that’s when I learnt something
+really interesting about the human behavior
+[00:34] If you can not solve a problem,
+[00:36] you feel sad.
+[00:36] But if your friend solves the exact
+same problem in under 15 minutes,
+[00:40] you are heartbroken
+[00:41] After facing many hurdles like that,
+[00:43] I managed to solve 541 problems on Leetcode
+[00:46] Along the way
+[00:47] I collected many amazing job offers
+[00:49] Today,
+[00:49] I am going to share everything that I have learnt in the process. At the end of the video,
+[00:53] I will also answer a very important question
+[00:55] And that is
+[00:56] “How to know if you are ready for
+interviews at big tech companies?”
+[00:58] Before you can even start on Leetcode,
+[01:00]  you need to have a good understanding of
+“Data Structures and Algorithms”
+[01:03] I have already covered this topic in my last video
+[01:06] which I will link at the end.
+[01:07] Once, I finished the basics of DSA,
+[01:09] I went to the top interview questions on Leetcode
+[01:11] There are exactly 150 problems in there
+[01:13] and all of them are very important
+[01:15] I recommend that if you are solving a problem which is outside these 150 problems,
+[01:19] make sure that it’s your 151st problem.
+[01:22] Now that you know where to start,
+[01:24] let’s discuss what’s the right strategy
+to solve these problems
+[01:27] I am sure you already know that all problems
+on Leetcode are tagged easy
+[01:30] medium or hard based on difficulty level
+[01:33] And if you look a little closer at the “Rotate Array” problem which was my very first problem on Leetcode,
+[01:37] it’s tagged as a “medium” difficulty problem
+[01:39] Starting my Leetcode journey with
+this problem was the first big mistake
+[01:42] I made 2 other mistakes that I will share later in this video
+[01:45] This problem was a mistake because
+if you are looking to stay motivated
+[01:48] and actually improve your programming logic
+[01:50] you have to start with easy problems
+[01:52]  As you solve some easy problems
+[01:54] you will start collecting some tools for your toolbox
+[01:57] And when you reach the medium problems
+[01:58] you will be able to use some of these tools to tackle them
+[02:01] This approach has 2 major advantages
+[02:03] One,
+[02:03] you will not lose your confidence like I did
+[02:05] when I encountered my first medium problem
+[02:08] The second and the bigger advantage
+according to me is that when
+[02:10] you solve the medium problems,
+[02:12] you will actually learn more from them
+[02:13] Let me explain what I mean by this
+[02:15]  Imagine that you have not solved any easy problems
+[02:17]  and you try to solve a medium problem
+[02:19] Let’s say you are not able to solve the problem
+[02:21] and you look at the solution
+[02:22] There is a good chance that you might
+not be able to understand the solution
+[02:25] and even if you do
+[02:26] it’s highly unlikely that you will grasp
+all the nuances of the solution
+[02:30] So, having some easy problems under your belt is a must before moving to the medium problems
+[02:34] Let’s go back to our “Top Interview Questions”
+and sort them by difficulty
+[02:37] Solve these 37 Easy problems
+[02:40] before you move on to the mediums
+[02:43] Now that you know the high level Leetcode strategy,
+[02:45] let's dig a little deeper and see how to
+approach any new problem
+[02:49] And this where you will see a big difference between a Newbie and a Pro interviewee
+[02:52] Let me tell you how a beginner solves any new problem
+[02:55] They read the problem statement and
+immediately start coding a solution
+[02:58] What they don’t understand
+[02:59] is that we should leave multiprocessing to the computers
+[03:02] Our brains are not built to think
+[03:04] and code the solution at the same time
+[03:05] Infact,
+[03:06] as much as the productivity gurus would
+like you to not believe this
+[03:09] we humans can not multitask
+[03:11] Our focus
+[03:12]  is like a zoom lens of a camera,
+[03:14] we can zoom in to see that one thing
+[03:16] or we can zoom out to see more things
+[03:18] but we can do both at the same time
+[03:20] If you don’t believe me,
+[03:21] you can try out this “Selective Attention Test”
+by Professor Simmons on Youtube
+[03:25] I will link it in the description
+[03:26] if you are with me on this,
+[03:28]  I would like you to break the process of solving a coding problem into 2 separate steps.
+[03:32] Step 1
+[03:33] is coming up with the solution in your head
+[03:35] and Step 2 is actually coding it up in the editor
+[03:37] Sounds obvious, doesn’t it?
+[03:39] Well,
+[03:39] it’s not that simple
+[03:41] You see,
+[03:41] when most people are thinking about the solution
+[03:43] what they are actually thinking about
+[03:45]  is how to code the solution
+[03:47] and there’s a big difference between the two.
+[03:49] To explain what I mean,
+[03:50] let’s walk through this easy problem on Leetcode.
+[03:52] In this problem,
+[03:53] you are given the root node of 2 binary trees
+[03:55] and you need to tell whether the 2 binary trees are the same
+[03:58] You can pause the video here if you want to solve the problem yourself
+[04:01] A beginner might look at the given function and start thinking about checking the value at the root node of both trees
+[04:06] to see if it's the same.
+[04:08] In the next step,
+[04:09]  they would start thinking how they can compare
+the value of the nodes to the left
+[04:12] or the right of the root nodes
+[04:14] This way of solving might work for this easy problem
+[04:16] but if you are doing this,
+[04:18] you are actually thinking about how to code the solution
+[04:20] Now,
+[04:21] I want you to forget that you know how to code.
+[04:23]  Just think about this
+[04:24] Given the root nodes of 2 binary trees,
+[04:26] What needs to be true for them to be the same.
+[04:28] Value of the root node needs to be the same,
+[04:31]  the left subtree needs to be the same
+[04:33] and the right subtree needs to be the same.
+Once you see that,
+[04:36] the solution is just this one line of code
+[04:38] where you check all 3 conditions
+[04:41] Training your brain to differentiate between
+thinking about the solution
+[04:44]  and coding it up
+[04:46] requires a lot of practice
+[04:47] But if you practice enough,
+[04:48] you will reach a place where you just have
+to think about the solution
+[04:51] Once you have a clear solution,
+[04:53] the coding part will start coming naturally to you.
+[04:55] In my interviews,
+[04:56] I rarely spend more than 15 minutes on
+writing the actual code
+[04:59] Most of my time goes into thinking about the solution
+[05:02] so keep practicing
+[05:03] It might take 100 problems for some
+[05:05] and 500 for others like me
+[05:07] But you will eventually get there.
+[05:10] Before we talk about how to know
+if you are ready for interviews,
+[05:13] let’s talk about how to practice
+[05:15] And this is where I made my second big mistake
+[05:17] And that is
+[05:18] I spent way too much time on one problem
+[05:20] It was mainly because my ego was very high.
+How am I not able to solve this problem?
+[05:24] Maybe if I give it a little more time?
+[05:26] By doing this
+[05:27]  I would end up spending upto 3-4 hours on one problem
+[05:30] In an interview,
+[05:31] you only get 45 minutes to solve a problem
+[05:33] Why should your practice session be so different?
+[05:35]  In my opinion,
+[05:36] if you are not close to the solution in 1 hour,
+[05:39] you should give up
+[05:40] and spend the rest of the time on looking at the solutions of the others and learning from them
+[05:44] So, go to the discussion section,
+[05:45] sort the solutions by most votes
+[05:47] and read at least the top 3 solutions
+[05:49]  I recommend 3 solutions and not just the top one
+[05:52] because sometimes
+[05:53] the top solution is not  practical for the interviews
+[05:56] Try to understand the solution rather than memorizing it
+[05:59] because you will not be able to replicate the
+solution in the interview
+[06:02]  After understanding the solution,
+[06:04] come back to the editor and code it up yourself.
+[06:06] Even if you think you are writing the exact
+same solution that you just read,
+[06:09] do it.
+[06:10] That’s because many times,
+[06:11] there are some corner cases that you
+will not be able to see just by reading
+[06:15]  And when you hit the test cases that don’t pass,
+[06:17] you will appreciate the difference between “less than” and “less than or equal to” much better.
+[06:21] But what do you do if you are able to solve the problem?
+[06:24] And this is where I made my third and the final mistake
+[06:26] After solving a problem,
+[06:28] I would just move onto the next question.
+[06:30] And that is not the best strategy because your solution might not be optimal
+[06:33] It might pass all the test cases
+[06:35] but there still might be some better solutions out there
+[06:37] I recommend reading the top solutions no matter what.
+[06:40] This is especially important if your solution is too lengthy and you think you can not solve problem in the interview time
+[06:45] In my opinion,
+[06:46] if you are writing a solution that is
+more than 20 lines of code,
+[06:49] There’s a good chance that there’s a
+better solution out there
+[06:52] So, there’s no harm in learning from others
+[06:56] Many people ask me how to decide whether
+they are ready for coding interviews
+[06:59] Are 200 problems enough
+[07:00] or should I do 500?
+[07:02] To be honest,
+[07:03] it doesn’t work that way in life
+[07:04]  It’s less about how many problems you have solved,
+[07:06] and more about how good you are at
+solving any new problem
+[07:09] I believe
+[07:10] that we should answer this question
+from an interview standpoint
+[07:12] An interview is usually 45 minutes long
+[07:15] and in most interviews, they ask you a
+Leetcode medium problems
+[07:18]  Accounting for the pressure of the interview
+[07:19] and adding a buffer for the introductions,
+[07:21]  if you can consistently solve Leetcode
+mediums in less than 30-35 minutes,
+[07:25] you are ready to go
+[07:26] Reaching this level on Leetcode is impossible
+[07:29] if you don’t have a strong foundational knowledge of
+Data Structures and Algorithms
+[07:33] To learn how I mastered Data Structures and Algorithms,
+[07:35] watch this video
+[07:36] My name is Sahil and I will see you in the next one
