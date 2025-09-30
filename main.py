@@ -1,4 +1,6 @@
-from YouTubeAgent import FilesystemAgentService
+from typing import List
+
+from agents.youtube_agent import FilesystemAgentService
 # what is the difference between an LLM and an agent?
 """
     what is it that separates an LLM, such as Claude or ChatGPT from an agent?  An agent has the ability to interact
@@ -32,6 +34,7 @@ from YouTubeAgent import FilesystemAgentService
 """
 
 if __name__ == '__main__':
+
     fa = FilesystemAgentService(False)
 #    fa.watch("https://www.youtube.com/watch?v=ZL14jkX39G0")
     # Benioff
@@ -41,13 +44,26 @@ if __name__ == '__main__':
     # jensen huang
     # Ycombinator
     # satya nadella
+    url = "https://www.youtube.com/watch?v=TDPqt7ONUCY" #
+    # url = "https://www.youtube.com/watch?v=-9rfzn-e-fY" # creatine
+#    url = "https://www.youtube.com/watch?v=dsfOV6TYLzk" # soccer
+    url ="https://www.youtube.com/watch?v=GPIuPRqDGG8" # how I got good at leetcode
+    url = "https://www.youtube.com/watch?v=dzxiPOkbtR4"
+    url = "https://www.youtube.com/watch?v=bI889qvShvk&t=3s" # what happened to milwaukee's impact driver
+    # url = "https://www.youtube.com/watch?v=HF2rRxJvHUU" # Unc and Ocho react to Super Bowl LIX\
+    # url = "https://www.youtube.com/watch?v=3TU0TzA08NE&t=1s"
+    # url = "https://www.youtube.com/watch?v=0alFHX45pU4"
+    # url = "https://www.youtube.com/watch?v=McZ7YOSmBAI" # health care affordability advisory meeting
+    # url = "https://www.youtube.com/watch?v=bEKufM_im88" # kylie jenner
+    url = "https://www.youtube.com/watch?v=rF9wmYHtJKc"
+    fa.watch(url)
 
     short_list_urls = """
     https://www.youtube.com/watch?v=TDPqt7ONUCY,
     https://www.youtube.com/watch?v=sal78ACtGTc,
     https://www.youtube.com/watch?v=pBBe1pk8hf4,
     https://www.youtube.com/watch?v=VDmU0jjklBo&t=8s"""
-    fa.watch(short_list_urls)
+#    fa.watch(short_list_urls)
 
     urls = """
     https://www.youtube.com/watch?v=TDPqt7ONUCY,
@@ -72,3 +88,6 @@ if __name__ == '__main__':
     https://www.youtube.com/watch?v=2YN2-oEBCJw,
     https://www.youtube.com/watch?v=kfe3ajUYSdc&t=13"""
 #    fa.watch(urls)
+
+
+

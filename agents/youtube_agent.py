@@ -1,36 +1,11 @@
-from youtube import YouTubeService
-from anthropicapp import YouTubeSummaryBot
+from components.youtube_service import YouTubeService
+from components.anthropic_service import YouTubeSummaryBot
 
 
 class FilesystemAgentService:
     def __init__(self, mock:bool):
         self.mock = mock
     def watch(self, urls: str):
-        """
-
-        :param urls: list of urls to watch
-        :return: {
-                    count : number of videos watched
-                    summaries : [
-                                    {
-                                        filename: "location",
-                                        title: the video title,
-                                        short: a 20 word summary of content
-                                    },
-                                    ...
-                                    {
-                                        filename: "location",
-                                        title: the video title,
-                                        short: a 20 word summary of content
-                                    },
-                                ],
-                    summary : {
-                                filename : "location"
-                                short : a 20 word summary of content
-                                }
-
-                    }
-        """
         if urls is not None or len(urls) > 0:
             youtube = YouTubeService(self.mock)
 
@@ -38,8 +13,12 @@ class FilesystemAgentService:
             summaryBot = YouTubeSummaryBot(self.mock)
             videos = []
             for url in list:
-                video = youtube.get_video(url)
-                summary = summaryBot.summarize_transcript(video.transcript)
+                video = youtube.get_video(url.strip())
+                youtube.save_transcript(video)
+
+                word_count = 800 #video.video_duration
+
+                summary = summaryBot.summarize_transcript(str(video), word_count)
                 filename = summaryBot.save_to_disk(summary=summary, url=video.url, title=video.title)
                 video.summary = summary
                 video.filename = filename
@@ -49,8 +28,8 @@ class FilesystemAgentService:
             for video in videos:
                 master_summary += f"{video.title}\n{video.summary}\n-------------"
 
-            insights = summaryBot.create_insights(master_summary)
-            summaryBot.save_to_disk2(insights)
+#            insights = summaryBot.create_insights(master_summary)
+ #           summaryBot.save_to_disk2(insights)
 
         else:
             # do we need a claude session? is claude api stateless?
