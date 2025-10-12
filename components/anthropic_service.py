@@ -6,6 +6,8 @@ from datetime import datetime
 
 from anthropic import Anthropic
 
+from components.youtube_service import YouTubeVideo
+
 
 class Claude:
     def __init__(self, model: str, max_tokens:int, creativity:float = 0):
@@ -52,6 +54,27 @@ class Claude:
 
         # Save the summary
         return response.content[0].text
+
+    def is_healthy(self):
+        try:
+            self.client.models.list()
+            return True
+        except anthropic.AnthropicError as e:
+            print(e)
+            return False
+
+    def create_system_prompt(self, prompt:str, videos: list[YouTubeVideo]) -> list[dict[str, Any]]:
+        system_blocks = []
+        system_blocks.append({
+            "type":"text",
+            "text": prompt
+        })
+        for video in videos:
+            block = {
+                "type":"text",
+                "text":""
+            }
+            system_blocks.append(block)
 
 #claude = Claude(model="claude-3-sonnet-20240229", max_tokens=4096, creativity=0)
 claude = Claude(model="claude-3-5-sonnet-20241022", max_tokens=8192, creativity=0)

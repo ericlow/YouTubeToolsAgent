@@ -57,7 +57,7 @@ def get_video_id(url) -> int:
 
 def get_video_metadata(video_id: str) -> tuple[str, str, int, datetime]:
 
-    youtube = build('youtube', 'v3', developerKey='AIzaSyChPGU5Un9dbWdA5lupHL8zbIJNyGMOHwk')
+    youtube = build('youtube', 'v3', developerKey='')
 
     response = youtube.videos().list(
         part='snippet,contentDetails',
