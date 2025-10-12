@@ -1,9 +1,14 @@
+from typing import Any
+
 import anthropic
 import os
 from datetime import datetime
 
+from anthropic import Anthropic
+
+
 class Claude:
-    def __init__(self, model: str, max_tokens:int, creativity:0):
+    def __init__(self, model: str, max_tokens:int, creativity:float = 0):
         """
         Constructor
         Args:
@@ -23,16 +28,16 @@ class Claude:
                     Generating multiple different approaches
                     More conversational interactions
         """
-        self.model = model
-        self.max_tokens = max_tokens
-        self.temperature = creativity
+        self.model:str = model
+        self.max_tokens: int = max_tokens
+        self.temperature: float = creativity
+        self.client: Anthropic = anthropic.Anthropic()
+        self.system_prompt: list[dict[str,Any]] | None = None
 
     def query(self, system:str, message:str) -> str:
 
-        client = anthropic.Anthropic()
-
         # Create the message
-        response = client.messages.create(
+        response = self.client.messages.create(
             model=self.model,
             max_tokens=self.max_tokens,
             temperature=self.temperature,

@@ -1,8 +1,11 @@
 import datetime
+from typing import Optional
+
 from googleapiclient.discovery import build
 from youtube_transcript_api import YouTubeTranscriptApi, TranscriptsDisabled, NoTranscriptFound
 import re
 
+### Youtube video, this helps us to interact with a specific single video
 class YouTubeVideo:
     def __init__(self, url: str, transcript: str, title: str, author: str, publish_date: datetime,
                  video_duration:int):
@@ -16,11 +19,11 @@ class YouTubeVideo:
     def __str__(self) -> str:
         return f"""URL: {self.url}\nTitle: {self.title}\nChannel: {self.author}\nPublish Date: {self.publish_date}\n\n{self.transcript}"""
 
-
+### YouTube Service that helps us to interact with youtube and the content
 class YouTubeService:
     """This YouTubeService has methods to act on the YouTube API"""
 
-    def __init__(self, mock: bool):
+    def __init__(self, mock: Optional[bool] = False):
         self.mock = mock
 
     def get_video(self, url) -> YouTubeVideo:
@@ -36,6 +39,7 @@ class YouTubeService:
             f.write(str(video))
         print(f"Saved Transcript: {filepath}")
 
+### Helper functions
 def get_video_id(url) -> int:
     """Extract video ID from YouTube URL"""
     patterns = [
@@ -50,7 +54,6 @@ def get_video_id(url) -> int:
             return match.group(1)
     # video id not found
     return None
-
 
 def get_video_metadata(video_id: str) -> tuple[str, str, int, datetime]:
 
@@ -75,9 +78,10 @@ def get_video_metadata(video_id: str) -> tuple[str, str, int, datetime]:
     publish_date = datetime.date.today()
     return title, author, duration
 
-
 def get_video_transcript(video_id: str) -> str:
-    transcript = YouTubeTranscriptApi.get_transcript(video_id)
+    #transcript = YouTubeTranscriptApi.get_transcript(video_id)
+    api = YouTubeTranscriptApi()
+    transcript = api.fetch(video_id)
     return transcript
 
 def get_video(url) -> YouTubeVideo:
@@ -93,10 +97,12 @@ def get_video(url) -> YouTubeVideo:
         # Format transcript with timestamps
         formatted_transcript = f"Transcript for: {video_title}\n\n"
         for entry in transcript:
-            timestamp = int(entry['start'])
+
+            timestamp = round(entry.start)
             minutes = timestamp // 60
             seconds = timestamp % 60
-            formatted_transcript += f"[{minutes:02d}:{seconds:02d}] {entry['text']}\n"
+            line = f"[{minutes:02d}:{seconds:02d}] {entry.text}\n"
+            formatted_transcript += line
 
         return YouTubeVideo(url=url, transcript=formatted_transcript, title=video_title, author=video_author,
                             publish_date=publish_date, video_duration=video_duration)

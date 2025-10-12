@@ -1,6 +1,8 @@
 from typing import List
 
+import MainCli
 from agents.youtube_agent import FilesystemAgentService
+from MainCli import *
 # what is the difference between an LLM and an agent?
 """
     what is it that separates an LLM, such as Claude or ChatGPT from an agent?  An agent has the ability to interact
@@ -34,6 +36,7 @@ from agents.youtube_agent import FilesystemAgentService
 """
 
 if __name__ == '__main__':
+    MainCli().cmdloop()
 
     fa = FilesystemAgentService(False)
 #    fa.watch("https://www.youtube.com/watch?v=ZL14jkX39G0")
