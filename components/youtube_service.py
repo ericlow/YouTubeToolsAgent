@@ -1,12 +1,16 @@
 import datetime
+import os
 from typing import Optional
 
 from googleapiclient.discovery import build
 from youtube_transcript_api import YouTubeTranscriptApi, TranscriptsDisabled, NoTranscriptFound
 import re
 
+from components.anthropic_service import Content
+
+
 ### Youtube video, this helps us to interact with a specific single video
-class YouTubeVideo:
+class YouTubeVideo(Content):
     def __init__(self, url: str, transcript: str, title: str, author: str, publish_date: datetime,
                  video_duration:int):
         self.transcript = transcript
@@ -16,8 +20,16 @@ class YouTubeVideo:
         self.publish_date = publish_date
         self.video_duration = video_duration
 
+        # Content interface
+        self.source: str = self.url
+        self.title: str = self.title
+        self.author: str = self.author
+        self.content: str = self.transcript
+        self.creation_date: datetime = publish_date
     def __str__(self) -> str:
         return f"""URL: {self.url}\nTitle: {self.title}\nChannel: {self.author}\nPublish Date: {self.publish_date}\n\n{self.transcript}"""
+
+
 
 ### YouTube Service that helps us to interact with youtube and the content
 class YouTubeService:
@@ -39,6 +51,15 @@ class YouTubeService:
             f.write(str(video))
         print(f"Saved Transcript: {filepath}")
 
+    def test(self):
+        youtube_key = os.getenv('YOUTUBE_API_KEY')
+        youtube = build('youtube', 'v3', developerKey=youtube_key)
+        youtube.videoCategories().list(
+            part="snippet",
+            regionCode="US"
+        )
+        print("YouTube OK")
+
 ### Helper functions
 def get_video_id(url) -> int:
     """Extract video ID from YouTube URL"""
@@ -56,8 +77,8 @@ def get_video_id(url) -> int:
     return None
 
 def get_video_metadata(video_id: str) -> tuple[str, str, int, datetime]:
-
-    youtube = build('youtube', 'v3', developerKey='')
+    YOUTUBE_KEY = os.getenv('YOUTUBE_API_KEY')
+    youtube = build('youtube', 'v3', developerKey=YOUTUBE_KEY)
 
     response = youtube.videos().list(
         part='snippet,contentDetails',

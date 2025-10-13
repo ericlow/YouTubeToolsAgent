@@ -1,5 +1,5 @@
 from components.youtube_service import YouTubeService
-from components.anthropic_service import YouTubeSummaryBot
+from components.bots.youtube_summary_bot import YouTubeSummaryBot
 
 
 class FilesystemAgentService:

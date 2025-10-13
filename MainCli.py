@@ -1,14 +1,16 @@
 import cmd
-#import components.youtube_service
+from dotenv import load_dotenv
 from cli_application import CliApplication
-#from components.youtube_service import YouTubeService, YouTubeVideo
-t = CliApplication()
 
 class MainCli(cmd.Cmd):
     prompt = "> "
     def __init__(self):
         super().__init__()
+        load_dotenv()
         self.app = CliApplication()
+
+    def do_test(self, arg):
+        self.app.do_test()
 
     def do_e(self, arg):
         self.do_exit(arg)
@@ -30,8 +32,11 @@ class MainCli(cmd.Cmd):
         self.do_summarize_video(id)
 
     def do_summarize_video(self, id):
-        print(f"summarize video: {id}")
-        self.app.summarize_video(int(id))
+        if len(id) == 0:
+            self.app.summarize_video(-1)
+        else:
+            print(f"summarize video: {id}")
+            self.app.summarize_video(int(id))
 
     def do_wv(self, url):
         self.do_watch_video(url)
@@ -44,6 +49,9 @@ class MainCli(cmd.Cmd):
         id, filename = arg.split(maxsplit=1)
         print(f"save video to file: {filename}")
         self.app.save_transcript(int(id), filename)
+
+    def do_q(self, arg):
+        self.do_ask_question(arg)
 
     def do_ask_question(self, arg):
         self.app.ask_question(id, arg)
