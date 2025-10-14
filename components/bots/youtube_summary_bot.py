@@ -7,7 +7,7 @@ This bots creates summaries of youtube videos
 """
 class YouTubeSummaryBot:
 
-    def __init__(self, mock:bool):
+    def __init__(self, mock:bool = False):
         # claude = Claude(model="claude-3-sonnet-20240229", max_tokens=4096, creativity=0)
         self.claude = Claude(model="claude-3-5-sonnet-20241022", max_tokens=8192, creativity=0)
 
@@ -83,7 +83,7 @@ class YouTubeSummaryBot:
     
     The audience (AI builders) will decide what's next and how to harness AI to increase productivity and create a better society.
     """
-    def summarize_transcript(self, transcript:str, word_count: int) -> str:
+    def summarize_transcript(self, transcript:str, word_count: int=300) -> str:
         """
             creates a summary of a youtube transcript
         """
@@ -92,7 +92,6 @@ class YouTubeSummaryBot:
             return self.mock_summary
         else:
             system = self.prompt
-            message = self.prompt_detailed_summary
             summary = self.claude.query(system=system, message=transcript)
 
             return summary

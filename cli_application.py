@@ -17,13 +17,14 @@ class CliApplication:
         self.prompt = """You are a conversation bot that will have conversations around content provided to you."""
         self.chatsession = ChatSession(self.prompt, [])
 
-    def watch_video(self, url):
+    def watch_video(self, url) -> str:
         youtube = YouTubeService()
-        #YOUTUBE_URL = "https://www.youtube.com/watch?v=Nrh9EGVk45s"
+
         video = youtube.get_video(url)
         self.videos[self.video_counter] = video
         self.video_counter += 1
         self.chatsession.update_context(list(self.videos.values()))
+        return str(video)
 
     def ask_question(self, id, question):
         message = ChatMessage(Role.USER, question)

@@ -26,8 +26,9 @@ class YouTubeVideo(Content):
         self.author: str = self.author
         self.content: str = self.transcript
         self.creation_date: datetime = publish_date
+
     def __str__(self) -> str:
-        return f"""URL: {self.url}\nTitle: {self.title}\nChannel: {self.author}\nPublish Date: {self.publish_date}\n\n{self.transcript}"""
+        return f"""URL: {self.url}\nTitle: {self.title}\nChannel: {self.author}\nPublish Date: {self.publish_date}"""
 
 
 
