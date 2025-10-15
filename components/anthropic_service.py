@@ -138,13 +138,13 @@ class ChatMessage:
         }
 
 class ChatSession:
-    def __init__(self, prompt: str, context: list[Content] = [], tools:Any | None=None):
+    def __init__(self, prompt: str, context: list[Content] = [], tools:Any =[]):
         self.claude:Claude = Claude()
         self.prompt: str = prompt
         self.context: list[Content] | [] = context
         self.system:  list[dict[str, Any]] = self.update_context(context)
         self.messages: list[dict[str,str]] = []
-        self.tools: Any | None = tools
+        self.tools: Any = tools
 
     def update_context(self, context:list[Content]):
         self.system  = Claude.create_system_prompt(self.prompt, context)
