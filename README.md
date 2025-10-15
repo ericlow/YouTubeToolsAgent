@@ -4,8 +4,8 @@ A chat agent for summarizing YouTube videos
 # Setup
 1. Create a virtual environment `python -m venv venv` the app was built in v3.11.5
 1. Activate the virtual env 
-   2. *nix: `source venv/bin/activate`
-   3. Windows: `venv\Scripts\activate`
+     1. *nix: `source venv/bin/activate`
+     2. Windows: `venv\Scripts\activate`
 1. Install dependencies: `pip install -r requirements.txt`
 1. create an `.env` file in the project root with the following content
 ```commandline
