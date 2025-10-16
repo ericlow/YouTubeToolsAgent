@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from components.anthropic_service import Claude
+from components.anthropic.anthropic_service import Claude
 from logger_config import getLogger
 
 """

@@ -1,6 +1,9 @@
 from typing import Dict
 
-from components.anthropic_service import Claude, ChatSession, ChatMessage, Role
+from components.anthropic.anthropic_service import Claude
+from components.anthropic.chat_message import ChatMessage
+from components.anthropic.chat_session import ChatSession
+from components.anthropic.role import Role
 from components.bots.youtube_summary_bot import YouTubeSummaryBot
 from components.youtube_service import YouTubeVideo, YouTubeService
 

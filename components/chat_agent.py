@@ -1,7 +1,10 @@
 import json
 
+from components.anthropic.chat_message import ChatMessage
+from components.anthropic.chat_session import ChatSession
+from components.anthropic.role import Role
 from components.chat_appllcation import ChatApplication
-from components.anthropic_service import ChatSession, ChatMessage, Role
+
 from components.tool_executor import ToolExecutor
 from components.tools import TOOLS
 from logger_config import getLogger

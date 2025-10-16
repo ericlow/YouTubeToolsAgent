@@ -11,6 +11,7 @@ A chat agent for summarizing YouTube videos
 ```commandline
 YOUTUBE_API_KEY=<YOUTUBE API KEY>
 ANTHROPIC_API_KEY=<ANTHROPIC API KEY>
+LOG_LEVEL=DEBUG
 ```
 <!--
 claude keys are available here: https://console.anthropic.com/settings/keys
@@ -49,6 +50,7 @@ activate the virtual env first
 ````
 
 ## TODO 
-* reformat the text to indicate when the chat agent is thinking, using tools, and it's final response
 * expose the prompts in a config file so they can more easily be edited
 * select Claude model from a single config
+* use the Claude stream interface to provide more frequent responses to the user, instead of all at once
+* ChatSession is not symmetric.  ChatMessages are input, but anthropic messages are returned.

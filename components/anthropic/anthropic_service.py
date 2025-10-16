@@ -1,21 +1,12 @@
 import json
 import os
-from datetime import datetime
-from enum import Enum
-from typing import Any, Protocol
+from typing import Any
 import anthropic
 from anthropic import Anthropic, Stream
 from anthropic.types import RawMessageStreamEvent, Message
 
+from components.anthropic.content import Content
 from logger_config import getLogger
-
-
-class Content(Protocol):
-    source: str
-    title: str
-    author: str
-    content: str
-    creation_date: datetime
 
 class Claude:
 
@@ -69,6 +60,7 @@ class Claude:
         )
 
         return response.content[0].text
+
     def query_basic(self, system: list[dict[str,Any]], message:list[dict[str,str]], tools: Any| None) -> str:
         (json.dumps(system,indent=2))
         response = self.query_adv(system, message, tools)
@@ -121,42 +113,3 @@ class Claude:
             system_blocks.append(block)
 
         return system_blocks
-
-
-class Role(Enum):
-    USER = "user"
-    ASSISTANT = "assistant"
-
-
-class ChatMessage:
-    def __init__(self, role: Role, content:str):
-        self.role:Role = role
-        self.content: str = content
-    def to_dict(self) -> dict[str, str]:
-        return {
-            "role": self.role.value,
-            "content": self.content
-        }
-
-class ChatSession:
-    def __init__(self, prompt: str, context: list[Content] = [], tools:Any =[]):
-        self.claude:Claude = Claude()
-        self.prompt: str = prompt
-        self.context: list[Content] | [] = context
-        self.system:  list[dict[str, Any]] = self.update_context(context)
-        self.messages: list[dict[str,str]] = []
-        self.tools: Any = tools
-
-    def update_context(self, context:list[Content]):
-        self.system  = Claude.create_system_prompt(self.prompt, context)
-        return self.system
-
-    def send(self, message :ChatMessage) -> Message | Stream[RawMessageStreamEvent]:
-        self.messages.append(message.to_dict())
-
-        rawresponse = self.claude.query_adv(self.system, self.messages,tools = self.tools)
-        message = rawresponse.content[0].text
-        response = ChatMessage(Role.ASSISTANT, message)
-        self.messages.append(response.to_dict())
-
-        return rawresponse

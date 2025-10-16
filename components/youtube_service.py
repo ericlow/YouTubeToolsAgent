@@ -6,7 +6,7 @@ from googleapiclient.discovery import build
 from youtube_transcript_api import YouTubeTranscriptApi, TranscriptsDisabled, NoTranscriptFound
 import re
 
-from components.anthropic_service import Content
+from components.anthropic.anthropic_service import Content
 from logger_config import getLogger
 
 ### Youtube video, this helps us to interact with a specific single video
@@ -32,13 +32,15 @@ class YouTubeVideo(Content):
 
 
 
-### YouTube Service that helps us to interact with youtube and the content
+### YouTube Service that helps us to interact with youtube and the content (get video transcripts,
 class YouTubeService:
     """This YouTubeService has methods to act on the YouTube API"""
 
     def __init__(self, mock: Optional[bool] = False):
         self.mock = mock
         self.logger = getLogger(__name__)
+        youtube_key = os.getenv('YOUTUBE_API_KEY')
+        self.youtube = build('youtube', 'v3', developerKey=youtube_key)
 
     def get_video(self, url) -> YouTubeVideo:
         self.logger.debug(f"Retrieving video:{url}")
@@ -54,9 +56,7 @@ class YouTubeService:
         self.logger.debug(f"Saved Transcript: {filepath}")
 
     def test(self):
-        youtube_key = os.getenv('YOUTUBE_API_KEY')
-        youtube = build('youtube', 'v3', developerKey=youtube_key)
-        youtube.videoCategories().list(
+        self.youtube.videoCategories().list(
             part="snippet",
             regionCode="US"
         )
@@ -136,9 +136,3 @@ def get_video(url) -> YouTubeVideo:
         raise f"Error: Transcripts are disabled for this video.\nVideo Title: {video_title}"
     except NoTranscriptFound:
         raise f"Error: No transcript found for this video.\nVideo Title: {video_title}"
-
-
-# Example usage
-if __name__ == "__main__":
-    url = "https://www.youtube.com/watch?v=xF554Tlzo-c"
-#    save_transcript(url, "summaries/transcript.txt")
