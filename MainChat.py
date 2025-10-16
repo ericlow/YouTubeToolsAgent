@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
-import cmd
 from dotenv import load_dotenv
+load_dotenv()
 
-from chat_agent import ChatAgent
-from chat_appllcation import ChatApplication
-from components.tool_executor import ToolExecutor
+import cmd
+from components.chat_agent import ChatAgent
+from components.chat_appllcation import ChatApplication
+from logger_config import setup_logging, getLogger
+
 
 class MainChat(cmd.Cmd):
     def __init__(self):
         super().__init__()
+        self.logging = getLogger(__name__)
         self.prompt = ">  "
-        load_dotenv()
         self.app = ChatApplication()
         self.agent = ChatAgent()
 
@@ -19,10 +21,11 @@ class MainChat(cmd.Cmd):
             response = self.agent.chat(
                 line
             )
-            print(f"agent: {response}")
+        self.logging.info(response)
 
     def do_exit(self, line:str):
         return True
 
 if __name__ == '__main__':
+    setup_logging()
     MainChat().cmdloop()

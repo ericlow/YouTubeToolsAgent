@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from components.anthropic_service import Claude
+from logger_config import getLogger
 
 """
 This bots creates summaries of youtube videos
@@ -9,8 +10,8 @@ class YouTubeSummaryBot:
 
     def __init__(self, mock:bool = False):
         # claude = Claude(model="claude-3-sonnet-20240229", max_tokens=4096, creativity=0)
+        self.logging = getLogger(__name__)
         self.claude = Claude(model="claude-3-5-sonnet-20241022", max_tokens=8192, creativity=0)
-
 
         self.mock = mock
         self.prompt = "You are an AI assistant that creates summaries of video transcripts."
@@ -87,7 +88,7 @@ class YouTubeSummaryBot:
         """
             creates a summary of a youtube transcript
         """
-        print("\tSummarizing Video")
+        self.logging.debug("Summarizing Video")
         if self.mock:
             return self.mock_summary
         else:
@@ -105,7 +106,7 @@ class YouTubeSummaryBot:
             #        with open(file_path, 'r', encoding='utf-8') as f:
             #            transcript = f.read()
 
-            print(f"\tSaving transcript for \"{title}\" to disk")
+            self.logging.info(f"\tSaving transcript for \"{title}\" to disk")
 
             actual_string = summary.encode().decode('unicode-escape')
 

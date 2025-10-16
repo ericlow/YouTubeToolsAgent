@@ -1,15 +1,16 @@
 import json
 
-from chat_appllcation import ChatApplication
+from components.chat_appllcation import ChatApplication
 from components.anthropic_service import ChatSession, ChatMessage, Role
 from components.tool_executor import ToolExecutor
 from components.tools import TOOLS
+from logger_config import getLogger
 
 
 class ChatAgent:
     def __init__(self):
         self.tools = ToolExecutor(ChatApplication())
-
+        self.logger = getLogger(__name__)
         self.prompt = """
             # Role
             You are a YouTube content analyzer.  You will use the tools provided to watch videos, summarize,
@@ -44,13 +45,14 @@ class ChatAgent:
             if response.stop_reason != 'tool_use': break
             else:
                 tool=response.content[1].name
-                print("Tool Use:")
-                print(response.content[0].text)
-                print(f"tool:{tool}")
-                print(json.dumps(response.content[1].input))
+                self.logger.debug("Tool Use:")
+                self.logger.debug(response.content[0].text)
+                self.logger.debug(f"tool:{tool}")
+                self.logger.debug(json.dumps(response.content[1].input))
                 tool_response = self.tools.execute_tool(tool,response.content[1].input)
-                print(f"tool response: {tool_response}")
+                self.logger.debug(f"tool response: {tool_response}")
                 response = self.session.send(ChatMessage(Role.USER,tool_response))
 
-        print("Exit Loop")
-        print(f"-> {response.content[0].text}")
+        exit_message = response.content[0].text
+        self.logger.debug(f"-> {exit_message}")
+        return exit_message

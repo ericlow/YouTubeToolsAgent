@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import cmd
 from dotenv import load_dotenv
-from cli_application import CliApplication
+from components.cli_application import CliApplication
 
 class MainCli(cmd.Cmd):
     prompt = "> "

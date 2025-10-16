@@ -1,6 +1,6 @@
 from typing import Any
 
-from chat_appllcation import ChatApplication
+from components.chat_appllcation import ChatApplication
 from components.tools import *
 
 class ToolExecutor:
@@ -22,7 +22,7 @@ class ToolExecutor:
 
         if tool_name == TOOL_GET_TRANSCRIPT:
             index = tool_input["index"]
-            return self.app.get_transcript(id)
+            return self.app.get_transcript(index)
 
         if tool_name == TOOL_SUMMARIZE_VIDEO:
             index = tool_input["index"]

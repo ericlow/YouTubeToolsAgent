@@ -7,7 +7,7 @@ from youtube_transcript_api import YouTubeTranscriptApi, TranscriptsDisabled, No
 import re
 
 from components.anthropic_service import Content
-
+from logger_config import getLogger
 
 ### Youtube video, this helps us to interact with a specific single video
 class YouTubeVideo(Content):
@@ -38,9 +38,10 @@ class YouTubeService:
 
     def __init__(self, mock: Optional[bool] = False):
         self.mock = mock
+        self.logger = getLogger(__name__)
 
     def get_video(self, url) -> YouTubeVideo:
-        print(f"Retrieving video:{url}")
+        self.logger.debug(f"Retrieving video:{url}")
         if self.mock:
             return YouTubeVideo(url=url, transcript="this is a transcript", title="mock video", author='mock author', publish_date=datetime.date.today(),video_duration=65)
         else:
@@ -50,7 +51,7 @@ class YouTubeService:
         filepath = f'summaries/transcript-{video.title}'
         with open(filepath, 'w', encoding='utf-8') as f:
             f.write(str(video))
-        print(f"Saved Transcript: {filepath}")
+        self.logger.debug(f"Saved Transcript: {filepath}")
 
     def test(self):
         youtube_key = os.getenv('YOUTUBE_API_KEY')
@@ -59,7 +60,7 @@ class YouTubeService:
             part="snippet",
             regionCode="US"
         )
-        print("YouTube OK")
+        self.logger.info("YouTube OK")
 
 ### Helper functions
 def get_video_id(url) -> int:

@@ -7,6 +7,8 @@ import anthropic
 from anthropic import Anthropic, Stream
 from anthropic.types import RawMessageStreamEvent, Message
 
+from logger_config import getLogger
+
 
 class Content(Protocol):
     source: str
@@ -43,11 +45,11 @@ class Claude:
                     Generating multiple different approaches
                     More conversational interactions
         """
+        self.logging = getLogger(__name__)
         self.model:str = model
         self.max_tokens: int = max_tokens
         self.temperature: float = creativity
         anthropic_key = os.getenv('ANTHROPIC_API_KEY')
-
         self.client: Anthropic = anthropic.Anthropic(api_key=anthropic_key)
         self.system_prompt: list[dict[str,Any]] | None = None
 
@@ -68,7 +70,7 @@ class Claude:
 
         return response.content[0].text
     def query_basic(self, system: list[dict[str,Any]], message:list[dict[str,str]], tools: Any| None) -> str:
-        print(json.dumps(system,indent=2))
+        (json.dumps(system,indent=2))
         response = self.query_adv(system, message, tools)
         return response.content[0].text
 
@@ -87,11 +89,10 @@ class Claude:
     def is_healthy(self):
         try:
             self.client.models.list()
-            print("Claude OK")
+            self.logging.info("Claude OK")
             return True
         except anthropic.AnthropicError as e:
-            print("Claude Error")
-            print(e)
+            self.logging.error("Claude Error: %s",e)
             return False
 
     def create_system_prompt(prompt:str, contentlist: list[Content]) -> list[dict[str, Any]]:
