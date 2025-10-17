@@ -66,7 +66,7 @@ class Claude:
         response = self.query_adv(system, message, tools)
         return response.content[0].text
 
-    def query_adv(self, system: list[dict[str,Any]], message:list[dict[str,str]], tools: Any| None) -> Message | Stream[RawMessageStreamEvent]:
+    def query_adv(self, system: list[dict[str,Any]], message:list[dict[str,str]], tools: Any| None) -> Message:
 
         response = self.client.messages.create(
             model=self.model,

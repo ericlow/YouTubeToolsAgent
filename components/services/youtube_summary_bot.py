@@ -4,7 +4,7 @@ from components.anthropic.anthropic_service import Claude
 from logger_config import getLogger
 
 """
-This bots creates summaries of youtube videos
+This services creates summaries of youtube videos
 """
 class YouTubeSummaryBot:
 

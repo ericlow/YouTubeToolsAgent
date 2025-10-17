@@ -1,7 +1,7 @@
 import json
 
-from components.bots.youtube_summary_bot import YouTubeSummaryBot
-from components.youtube_service import YouTubeVideo, YouTubeService
+from components.services.youtube_summary_bot import YouTubeSummaryBot
+from components.services.youtube_service import YouTubeVideo, YouTubeService
 
 
 class ChatApplication:

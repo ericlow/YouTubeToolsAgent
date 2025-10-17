@@ -3,8 +3,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 import cmd
-from components.chat_agent import ChatAgent
-from components.chat_appllcation import ChatApplication
+from components.agents.chat_agent import ChatAgent
+from components.services.chat_appllcation import ChatApplication
 from logger_config import setup_logging, getLogger
 
 

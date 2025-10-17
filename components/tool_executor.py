@@ -1,6 +1,6 @@
 from typing import Any
 
-from components.chat_appllcation import ChatApplication
+from components.services.chat_appllcation import ChatApplication
 from components.tools import *
 
 class ToolExecutor:

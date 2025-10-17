@@ -63,6 +63,7 @@ class YouTubeService:
         self.logger.info("YouTube OK")
 
 ### Helper functions
+
 def get_video_id(url) -> int:
     """Extract video ID from YouTube URL"""
     patterns = [
