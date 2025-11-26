@@ -12,11 +12,32 @@ A chat agent for summarizing YouTube videos
 YOUTUBE_API_KEY=<YOUTUBE API KEY>
 ANTHROPIC_API_KEY=<ANTHROPIC API KEY>
 LOG_LEVEL=DEBUG
+DATABASE_URL=postgresql://postgres:[YOUR_PASSWORD]@localhost:5432/content_analysis
 ```
 <!--
 claude keys are available here: https://console.anthropic.com/settings/keys
 youtube keys are available here: https://console.cloud.google.com/apis/credentials?pli=1&project=resfracweather
 -->
+1. Install Python Dependencies
+```bash
+pip install -r requirements.txt --break-system-packages
+```
+1. Setup Postgres Database
+1. Create the database:
+```bash
+psql -h localhost -U postgres -c "CREATE DATABASE content_analysis;"
+```
+
+1. Apply Database Schema
+
+Create all database tables:
+```bash
+# First time setup (fresh start)
+python database/apply_schema.py --fresh
+
+# Subsequent runs (preserves data)
+python database/apply_schema.py
+```
 
 # Application 2
 

@@ -3,6 +3,16 @@ import cmd
 from dotenv import load_dotenv
 from components.cli_application import CliApplication
 
+"""
+This app allows the user to analyze videos through a command line interface
+    Commands: 
+        help
+        ask_question
+        list_videos
+        summarize_video
+        watch_video
+        save_transcript
+"""
 class MainCli(cmd.Cmd):
     prompt = "> "
     def __init__(self):
