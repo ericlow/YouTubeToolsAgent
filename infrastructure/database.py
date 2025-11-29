@@ -1,9 +1,9 @@
-import os
-import psycopg2
-from dotenv import load_dotenv
-
-load_dotenv()
-"""Postgres adapter for raw SQL"""
-def get_connection():
-    return psycopg2.connect(os.getenv('DATABASE_URL'))
-
+# import os
+# import psycopg2
+# from dotenv import load_dotenv
+#
+# load_dotenv()
+# """Postgres adapter for raw SQL"""
+# def get_connection():
+#     return psycopg2.connect(os.getenv('DATABASE_URL'))
+#
