@@ -1,12 +1,6 @@
 # Technical Requirements Document
 ## YouTube Research Tool - Console to Backend Service Conversion
 
-**Version**: 1.2
-**Date**: December 4, 2025
-**Author**: Eric
-**Status**: Draft
-
----
 
 ## 1. Executive Summary
 
@@ -33,7 +27,7 @@ Convert the existing YouTube Research Tool from a CLI application to a professio
 ### 1.3 Success Criteria
 - All API endpoints functional and accessible via public IP
 - Database persistence verified across server restarts
-- Stateless backend confirmed with concurrent sessions
+- Stateless backend confirmed with concurrent workspaces
 - Remote testing successful (submit URL → get summary → ask questions → verify history)
 - All responses under 10 seconds
 
@@ -69,41 +63,6 @@ Convert the existing YouTube Research Tool from a CLI application to a professio
 │ - YouTube API│        │                 │
 └──────────────┘        └─────────────────┘
 ```
-
-### 2.2 Component Architecture
-
-```
-YouTubeToolsAgent/
-├── api/
-│   ├── __init__.py
-│   ├── main.py              # FastAPI app, endpoints
-│   ├── models.py            # SQLAlchemy ORM models
-│   ├── database.py          # DB connection/session management
-│   └── middleware.py        # Auth, logging, CORS
-├── components/
-│   ├── agents/
-│   │   └── chat_agent.py    # AI orchestration (reused)
-│   ├── anthropic/
-│   │   ├── anthropic_service.py  # Claude API wrapper (reused)
-│   │   ├── chat_session.py       # Conversation management (reused)
-│   │   └── ...
-│   ├── services/
-│   │   ├── youtube_service.py    # YouTube API + transcripts (reused)
-│   │   └── ...
-│   └── ...
-├── docs/
-│   ├── TRD.md               # This document
-│   ├── architecture.md      # Architecture diagrams
-│   └── deployment.md        # Deployment runbook
-├── .github/
-│   └── workflows/
-│       ├── test.yml         # Run tests on PR
-│       └── deploy.yml       # Deploy on merge to main
-├── requirements.txt
-├── .env.example
-└── README.md
-```
-
 ### 2.3 Data Flow
 
 **Request Flow**:
@@ -116,8 +75,8 @@ YouTubeToolsAgent/
 7. Request logged to CloudWatch
 
 **Stateless Pattern**:
-- No in-memory session storage
-- Each request contains session_id
+- No in-memory workspace storage
+- Each request contains workspace_id
 - Backend loads state from DB → processes → saves to DB
 - Enables horizontal scaling
 
@@ -135,8 +94,8 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Sessions table (chat conversations)
-CREATE TABLE sessions (
+-- Workspaces table (chat conversations)
+CREATE TABLE workspaces (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -161,23 +120,23 @@ CREATE TABLE videos (
 -- Messages table (chat history)
 CREATE TABLE messages (
     id SERIAL PRIMARY KEY,
-    session_id UUID REFERENCES sessions(id) ON DELETE CASCADE,
+    workspace_id UUID REFERENCES workspaces(id) ON DELETE CASCADE,
     video_id INTEGER REFERENCES videos(id) ON DELETE SET NULL,
     role VARCHAR(20) NOT NULL,              -- 'user' or 'assistant'
     content TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
-    INDEX idx_session_id (session_id),
+
+    INDEX idx_workspace_id (workspace_id),
     INDEX idx_created_at (created_at)
 );
 
--- Session-Video association (many-to-many)
-CREATE TABLE session_videos (
-    session_id UUID REFERENCES sessions(id) ON DELETE CASCADE,
+-- Workspace-Video association (many-to-many)
+CREATE TABLE workspace_videos (
+    workspace_id UUID REFERENCES workspaces(id) ON DELETE CASCADE,
     video_id INTEGER REFERENCES videos(id) ON DELETE CASCADE,
     added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
-    PRIMARY KEY (session_id, video_id)
+
+    PRIMARY KEY (workspace_id, video_id)
 );
 ```
 
@@ -191,7 +150,7 @@ CREATE TABLE session_videos (
 
 **Storage Estimates**:
 - Users: 1 row × 100 bytes = 100 bytes
-- Sessions: 5 sessions × 200 bytes = 1 KB
+- Workspaces: 5 workspaces × 200 bytes = 1 KB
 - Videos: 10 videos × (500 + avg transcript 50KB) = 505 KB
 - Messages: 100 messages × 2KB avg = 200 KB
 - **Total**: ~706 KB
@@ -205,9 +164,9 @@ CREATE TABLE session_videos (
 ### 3.3 SQLAlchemy Models
 
 Key relationships:
-- One User → Many Sessions
-- One Session → Many Messages
-- One Session → Many Videos (via association table)
+- One User → Many Workspaces
+- One Workspace → Many Messages
+- One Workspace → Many Videos (via association table)
 - One Video → Many Messages (optional reference)
 
 ---
@@ -220,8 +179,8 @@ Key relationships:
 
 **Authentication**: All endpoints require `X-API-Key` header
 
-#### POST /sessions
-Create a new chat session.
+#### POST /workspaces
+Create a new chat workspace.
 
 **Request**:
 ```json
@@ -231,13 +190,13 @@ Create a new chat session.
 **Response** (201 Created):
 ```json
 {
-  "session_id": "550e8400-e29b-41d4-a716-446655440000",
+  "workspace_id": "550e8400-e29b-41d4-a716-446655440000",
   "created_at": "2025-11-22T10:30:00Z"
 }
 ```
 
-#### POST /sessions/{session_id}/videos
-Submit a YouTube URL to a session.
+#### POST /workspaces/{workspace_id}/videos
+Submit a YouTube URL to a workspace.
 
 **Request**:
 ```json
@@ -265,8 +224,8 @@ Submit a YouTube URL to a session.
 - Stores video and summary in database
 - Returns immediately (synchronous for MVP)
 
-#### GET /sessions/{session_id}/videos
-List all videos in a session.
+#### GET /workspaces/{workspace_id}/videos
+List all videos in a workspace.
 
 **Response** (200 OK):
 ```json
@@ -284,7 +243,7 @@ List all videos in a session.
 }
 ```
 
-#### POST /sessions/{session_id}/chat
+#### POST /workspaces/{workspace_id}/chat
 Send a message and get AI response.
 
 **Request**:
@@ -306,13 +265,13 @@ Send a message and get AI response.
 ```
 
 **Behavior**:
-- Loads session history from database
+- Loads workspace history from database
 - Loads video transcript if video_id provided
 - Sends to Claude API with full context
 - Saves both user message and assistant response
 - Returns assistant response
 
-#### GET /sessions/{session_id}/messages
+#### GET /workspaces/{workspace_id}/messages
 Retrieve chat history.
 
 **Query Params**:
@@ -523,7 +482,7 @@ ENVIRONMENT=development
   "timestamp": "2025-11-22T10:30:00.123Z",
   "level": "INFO",
   "logger": "api.main",
-  "message": "POST /sessions/123/chat completed",
+  "message": "POST /workspaces/123/chat completed",
   "request_id": "abc-123",
   "status_code": 200,
   "duration_ms": 1234,
@@ -1254,14 +1213,14 @@ import json
 async def stream_message(workspace_id: str, request: MessageRequest):
     async def event_stream():
         # Load conversation history
-        session = await load_session(workspace_id)
+        workspace = await load_workspace(workspace_id)
 
         # Stream from Claude API
         async with claude.messages.stream(
             model="claude-sonnet-4-5-20250929",
             max_tokens=8192,
-            system=session.system_prompt,
-            messages=session.messages + [{"role": "user", "content": request.content}]
+            system=workspace.system_prompt,
+            messages=workspace.messages + [{"role": "user", "content": request.content}]
         ) as stream:
             async for text in stream.text_stream:
                 yield f"data: {json.dumps({'token': text})}\n\n"
