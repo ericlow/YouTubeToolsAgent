@@ -12,8 +12,9 @@ from infrastructure.orm_database import get_session
 def headline(val:str):
     print(f'====== {val} ======')
 
-s = get_session()
+s = next(get_session())
 headline('Read all Users')
+
 users = s.query(UserModel).order_by(UserModel.created_at.desc()).limit(3).all()
 for u in users:
     print(u)
