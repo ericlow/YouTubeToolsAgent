@@ -425,25 +425,8 @@ Health check endpoint (no auth required).
    - Run health check
 
 ### 6.3 Configuration Management
-
 **Environment Variables** (stored in AWS Parameter Store):
-```bash
-ANTHROPIC_API_KEY=sk-ant-...
-DATABASE_URL=postgresql://postgres:password@rds-endpoint:5432/youtube_research
-API_KEY=your-secret-api-key
-LOG_LEVEL=INFO
-ENVIRONMENT=production
-```
-
 **Local Development** (.env file, gitignored):
-```bash
-ANTHROPIC_API_KEY=sk-ant-...
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/youtube_research
-API_KEY=dev-api-key
-LOG_LEVEL=DEBUG
-ENVIRONMENT=development
-```
-
 ---
 
 ## 7. Security Requirements
