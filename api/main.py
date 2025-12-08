@@ -5,7 +5,7 @@ from starlette.responses import JSONResponse
 from api.models import Base
 from api.routes.health_check import HealthCheck
 from infrastructure.orm_database import engine
-from api.routes import workspaces, health, videos
+from api.routes import workspaces, health, videos, messages
 
 app = FastAPI(title="Youtube Research API")
 
@@ -57,7 +57,6 @@ async def global_exception_handler(request, exc):
 def root():
     return { "message" : "app is running"}
 
-
 PATH_HEALTH = "/api/v1/health"
 PATH_WORKSPACES = "/api/v1/workspaces"
 PATH_WORKSPACE = f"{PATH_WORKSPACES}/{{workspace_id}}"
@@ -68,12 +67,4 @@ PATH_MESSAGES = f"{PATH_WORKSPACE}/messages"
 app.include_router(workspaces.router, prefix=PATH_WORKSPACES)
 app.include_router(videos.router, prefix=PATH_VIDEOS)
 app.include_router(health.router, prefix=PATH_HEALTH)
-
-
-# messages
-@app.get(PATH_MESSAGES)
-def get_messages():
-    return {
-        "workspace_id": "",
-        "created_at": ""
-    }
+app.include_router(messages.router, prefix=PATH_MESSAGES)

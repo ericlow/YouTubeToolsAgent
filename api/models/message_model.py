@@ -6,6 +6,8 @@ from .base import Base
 
 class MessageModel(Base):
     __tablename__ = 'messages'
+    ROLE_USER = 'user'
+    ROLE_ASSISTANT = 'assistant'
 
     message_id = Column(Integer, primary_key=True, autoincrement=True)
     workspace_id = Column(UUID(as_uuid=True), ForeignKey('workspaces.workspace_id'), nullable = False)

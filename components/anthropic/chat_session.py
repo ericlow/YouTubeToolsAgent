@@ -34,3 +34,5 @@ class ChatSession:
         self.messages.append(response.to_dict())
 
         return rawresponse
+    def is_healthy(self):
+        return self.claude.is_healthy()

@@ -40,7 +40,7 @@ class ChatAgent:
         """
         self.session = ChatSession(self.prompt,[], TOOLS)
 
-    def chat(self, message) -> str:
+    def chat(self, message:str) -> str:
         chatMessage = ChatMessage(Role.USER, message)
         response = self.session.send(chatMessage)
 
@@ -59,3 +59,5 @@ class ChatAgent:
         exit_message = response.content[0].text
         self.logger.debug(f"-> {exit_message}")
         return exit_message
+    def is_healthy(self) -> bool:
+        return self.session.is_healthy()
