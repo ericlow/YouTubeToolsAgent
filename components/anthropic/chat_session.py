@@ -13,12 +13,17 @@ from components.anthropic.role import Role
     The prompt and content can be used as the system prompt and can be collected and cached together.
 """
 class ChatSession:
-    def __init__(self, prompt: str, context: list[Content] = [], tools:Any =[]):
+    def __init__(self, prompt: str, tools:Any =[], context: list[Content] = [], messages: list[ChatMessage]=[]):
         self.claude:Claude = Claude()
         self.prompt: str = prompt
         self.context: list[Content] | [] = context
         self.system:  list[dict[str, Any]] = self.update_context(context)
-        self.messages: list[dict[str,str]] = []
+
+        if messages:
+            messages_primitives = [message.to_dict()  for message in messages ]
+        else:
+            messages_primitives = []
+        self.messages: list[dict[str,str]] = messages_primitives
         self.tools: Any = tools
 
     def update_context(self, context:list[Content]):

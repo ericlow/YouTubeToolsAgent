@@ -3,6 +3,9 @@ from sqlalchemy.orm import Session
 
 from api.models import MessageModel
 from components.agents.chat_agent import ChatAgent
+from components.anthropic.chat_message import ChatMessage
+from components.anthropic.content import Content
+from components.anthropic.role import Role
 from infrastructure.orm_database import get_session
 
 router = APIRouter()
@@ -16,13 +19,22 @@ def get_messages(workspace_id: str, cursor: int= None, s: Session = Depends(get_
 
 @router.post("/")
 def create_message(workspace_id:str, message: str, s: Session = Depends(get_session)):
+    # add message to DB
     message = MessageModel(workspace_id, MessageModel.ROLE_USER, message)
     s.add(message)
     s.commit()
 
-    agent = ChatAgent()
-    print(agent.is_healthy())
+    # retrieve all messages from DB
+    messages = s.query(MessageModel).filter_by(workspace_id=workspace_id).order_by(MessageModel.created_at.asc()).all()
+    agent_messages= [ChatMessage(Role(message.role), message.content) for message in messages]
+
+    # retrieve all content from DB
+    agent_context: list[Content] = []
+
+    # Ask Agent to take next step
+    agent = ChatAgent(agent_context, agent_messages)
     agent_message = agent.chat(message.content)
+
     message = MessageModel(workspace_id, MessageModel.ROLE_ASSISTANT, agent_message)
     s.add(message)
     s.commit()

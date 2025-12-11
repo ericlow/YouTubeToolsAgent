@@ -1,9 +1,12 @@
 import json
+from typing import Any
 
 from components.anthropic.chat_message import ChatMessage
 from components.anthropic.chat_session import ChatSession
+from components.anthropic.content import Content
 from components.anthropic.role import Role
 from components.services.chat_appllcation import ChatApplication
+from domain.models.agent_result import AgentResult
 
 from components.tool_executor import ToolExecutor
 from components.tools import TOOLS
@@ -11,7 +14,7 @@ from logger_config import getLogger
 
 
 class ChatAgent:
-    def __init__(self):
+    def __init__(self, context: list[Content] = [], messages: list[ChatMessage]=[], tools:Any =TOOLS):
         self.tools = ToolExecutor(ChatApplication())
         self.logger = getLogger(__name__)
         self.prompt = """
@@ -38,9 +41,9 @@ class ChatAgent:
             expected.  There are no limitations on reporting errors.
              
         """
-        self.session = ChatSession(self.prompt,[], TOOLS)
+        self.session = ChatSession(self.prompt, tools=tools, context=context, messages=messages)
 
-    def chat(self, message:str) -> str:
+    def chat(self, message:str) -> AgentResult:
         chatMessage = ChatMessage(Role.USER, message)
         response = self.session.send(chatMessage)
 
@@ -58,6 +61,11 @@ class ChatAgent:
 
         exit_message = response.content[0].text
         self.logger.debug(f"-> {exit_message}")
-        return exit_message
+
+        # Return AgentResult with all messages and final response
+        return AgentResult(
+            all_messages=self.session.messages,
+            final_response=exit_message
+        )
     def is_healthy(self) -> bool:
         return self.session.is_healthy()
