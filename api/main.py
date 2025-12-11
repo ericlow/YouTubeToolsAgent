@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends
+from sqlalchemy.exc import OperationalError
 from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import JSONResponse
 from api.models import Base
@@ -15,9 +16,15 @@ async def lifespan(app: FastAPI):
     Lifecycle manager for the FastAPI application.
     Handles startup and shutdown events.
     """
-    # Startup: Create database tables
-    Base.metadata.create_all(bind=engine)
 
+    try:
+        # Startup: Create database tables
+        Base.metadata.create_all(bind=engine)
+    except OperationalError as e:
+        print("\n❌ ERROR: Cannot connect to database")
+        print("\nMake sure PostgreSQL is running")
+        print(e)
+        raise SystemExit(1)  # Exit cleanly instead of showing stack trace
     yield
 
     # Shutdown: Clean up resources if needed
