@@ -6,6 +6,7 @@ from components.anthropic.chat_session import ChatSession
 from components.anthropic.content import Content
 from components.anthropic.role import Role
 from components.services.chat_appllcation import ChatApplication
+from domain.models.agent_event import AgentEvent
 from domain.models.agent_result import AgentResult
 
 from components.tool_executor import ToolExecutor
@@ -46,6 +47,9 @@ class ChatAgent:
     def chat(self, message:str, on_event=None) -> AgentResult:
         chatMessage = ChatMessage(Role.USER, message)
         response = self.session.send(chatMessage)
+        ae = AgentEvent(response.stop_reason, "dec 11", response.content[0].text)
+        if on_event: on_event(ae)
+
 
         while True:
             if response.stop_reason != 'tool_use': break
@@ -58,6 +62,9 @@ class ChatAgent:
                 tool_response = self.tools.execute_tool(tool,response.content[1].input)
                 self.logger.debug(f"tool response: {tool_response}")
                 response = self.session.send(ChatMessage(Role.ASSISTANT,tool_response))
+                ae = AgentEvent(response.stop_reason, "dec 12",response.content[0].text)
+
+                if on_event: on_event(ae)
 
         exit_message = response.content[0].text
         self.logger.debug(f"-> {exit_message}")

@@ -5,6 +5,7 @@ from api.models import MessageModel
 from components.agents.chat_agent import ChatAgent
 from components.anthropic.chat_message import ChatMessage
 from components.anthropic.content import Content
+from domain.models.agent_event import AgentEvent
 from domain.repositories.message_repository import MessageRepository
 from domain.services.workspace_service import WorkspaceService
 from infrastructure.orm_database import get_session
