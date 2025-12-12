@@ -1,8 +1,18 @@
 from datetime import datetime
 from typing import Optional
-
 from pydantic import BaseModel
-from requests import Session
+
+from api.models import MessageModel
+from api.routes.messages import MessageRepository
+from components.anthropic.chat_message import ChatMessage
+from components.anthropic.role import Role
+from api.models import MessageModel
+from components.agents.chat_agent import ChatAgent
+from components.anthropic.chat_message import ChatMessage
+from components.anthropic.content import Content
+from domain.repositories.message_repository import MessageRepository
+from infrastructure.orm_database import get_session
+
 
 
 class CreateWorkspaceRequest(BaseModel):
@@ -19,18 +29,25 @@ class WorkspaceListResponse(BaseModel):
     workspaces: list[WorkspaceResponse]
 
 class WorkspaceService:
-    @staticmethod
-    def create(db: Session, request: CreateWorkspaceRequest):
-        pass
+    def __init__(self, message_repository:MessageRepository):
+        self.message_repository = message_repository
 
-    @staticmethod
-    def list_all(db: Session):
-        pass
+    def getMessages(self, workspace_id, cursor):
+        return self.message_repository.get_messages(workspace_id)
 
-    @staticmethod
-    def get(db: Session, workspace_id):
-        pass
+    def send_message(self, workspace_id, message:str):
+        self.message_repository.create_message(workspace_id, MessageModel.ROLE_USER, message)
+        messages = self.message_repository.get_messages(workspace_id)
 
-    @staticmethod
-    def delete(db: Session, workspace_id):
-        pass
+
+        agent_messages = [ChatMessage(Role(message.role), message.content) for message in messages]
+        agent_context: list[Content] = []
+
+        # Ask Agent to take next step
+        agent = ChatAgent(agent_context, agent_messages)
+        agent_message = agent.chat(message)
+
+        self.message_repository.create_message(workspace_id, MessageModel.ROLE_ASSISTANT, agent_message.final_response)
+
+        return agent_message.final_response
+

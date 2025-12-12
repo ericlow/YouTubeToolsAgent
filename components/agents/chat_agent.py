@@ -43,7 +43,7 @@ class ChatAgent:
         """
         self.session = ChatSession(self.prompt, tools=tools, context=context, messages=messages)
 
-    def chat(self, message:str) -> AgentResult:
+    def chat(self, message:str, on_event=None) -> AgentResult:
         chatMessage = ChatMessage(Role.USER, message)
         response = self.session.send(chatMessage)
 
@@ -57,7 +57,7 @@ class ChatAgent:
                 self.logger.debug(json.dumps(response.content[1].input))
                 tool_response = self.tools.execute_tool(tool,response.content[1].input)
                 self.logger.debug(f"tool response: {tool_response}")
-                response = self.session.send(ChatMessage(Role.USER,tool_response))
+                response = self.session.send(ChatMessage(Role.ASSISTANT,tool_response))
 
         exit_message = response.content[0].text
         self.logger.debug(f"-> {exit_message}")
