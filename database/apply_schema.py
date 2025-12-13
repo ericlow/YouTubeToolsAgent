@@ -20,7 +20,7 @@ def get_database_url():
     """Get database URL from environment or use default."""
     return os.getenv(
         'DATABASE_URL',
-        'postgresql://postgres:YOUR_PASSWORD@localhost:5432/content_analysis'
+        'postgresql://postgres:crapcrap@localhost:5432/content_analysis'
     )
 
 

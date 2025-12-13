@@ -1,9 +1,16 @@
 import json
+from datetime import datetime
+from typing import Any
+
+from anthropic.types import ToolUseBlock
 
 from components.anthropic.chat_message import ChatMessage
 from components.anthropic.chat_session import ChatSession
+from components.anthropic.content import Content
 from components.anthropic.role import Role
 from components.services.chat_appllcation import ChatApplication
+from domain.models.agent_event import AgentEvent
+from domain.models.agent_result import AgentResult
 
 from components.tool_executor import ToolExecutor
 from components.tools import TOOLS
@@ -11,8 +18,10 @@ from logger_config import getLogger
 
 
 class ChatAgent:
-    def __init__(self):
-        self.tools = ToolExecutor(ChatApplication())
+    def __init__(self, context: list[Content] = [], messages: list[ChatMessage]=[], tools:Any =TOOLS, on_event=None):
+
+        self.on_event = on_event
+        self.tools = ToolExecutor(ChatApplication(on_event=on_event))
         self.logger = getLogger(__name__)
         self.prompt = """
             # Role
@@ -38,24 +47,39 @@ class ChatAgent:
             expected.  There are no limitations on reporting errors.
              
         """
-        self.session = ChatSession(self.prompt,[], TOOLS)
+        self.session = ChatSession(self.prompt, tools=tools, context=context, messages=messages)
 
-    def chat(self, message) -> str:
+
+    def chat(self, message:str) -> AgentResult:
         chatMessage = ChatMessage(Role.USER, message)
         response = self.session.send(chatMessage)
+        ae = AgentEvent(AgentEvent.to_agent_event_type(response.stop_reason), "dec 11", response.content[0].text)
+        if self.on_event: self.on_event(ae)
 
         while True:
             if response.stop_reason != 'tool_use': break
             else:
+
+                # HACK ELOW somtimes we have 2 content, sometimes 1, sometimes its a ToolUseBlock, sometimes it's something else....
+                print("Tool Use:")
+                print(response)
                 tool=response.content[1].name
-                self.logger.debug("Tool Use:")
-                self.logger.debug(response.content[0].text)
-                self.logger.debug(f"tool:{tool}")
-                self.logger.debug(json.dumps(response.content[1].input))
                 tool_response = self.tools.execute_tool(tool,response.content[1].input)
-                self.logger.debug(f"tool response: {tool_response}")
-                response = self.session.send(ChatMessage(Role.USER,tool_response))
+                print(f"\tTool Use Result: {tool_response}")
+                response = self.session.send(ChatMessage(Role.ASSISTANT,tool_response))
+                print(f"Claude Tool Use Response:")
+                print(response)
+
+                # ae = AgentEvent('tool_result', datetime.now() ,event_detail)
+                # if self.on_event: self.on_event(ae)
 
         exit_message = response.content[0].text
         self.logger.debug(f"-> {exit_message}")
-        return exit_message
+
+        # Return AgentResult with all messages and final response
+        return AgentResult(
+            all_messages=self.session.messages,
+            final_response=exit_message
+        )
+    def is_healthy(self) -> bool:
+        return self.session.is_healthy()

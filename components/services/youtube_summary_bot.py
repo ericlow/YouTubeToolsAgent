@@ -11,7 +11,7 @@ class YouTubeSummaryBot:
     def __init__(self, mock:bool = False):
         # claude = Claude(model="claude-3-sonnet-20240229", max_tokens=4096, creativity=0)
         self.logging = getLogger(__name__)
-        self.claude = Claude(model="claude-3-5-sonnet-20241022", max_tokens=8192, creativity=0)
+        self.claude = Claude(model="claude-sonnet-4-5-20250929", max_tokens=8192, creativity=0)
 
         self.mock = mock
         self.prompt = "You are an AI assistant that creates summaries of video transcripts."

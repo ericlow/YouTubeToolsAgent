@@ -1,7 +1,7 @@
 from typing import Any
 
 from anthropic import Stream
-from anthropic.types import Message, RawMessageStreamEvent
+from anthropic.types import Message, RawMessageStreamEvent, ToolUseBlock
 
 from components.anthropic.anthropic_service import Claude
 from components.anthropic.chat_message import ChatMessage
@@ -13,12 +13,17 @@ from components.anthropic.role import Role
     The prompt and content can be used as the system prompt and can be collected and cached together.
 """
 class ChatSession:
-    def __init__(self, prompt: str, context: list[Content] = [], tools:Any =[]):
+    def __init__(self, prompt: str, tools:Any =[], context: list[Content] = [], messages: list[ChatMessage]=[]):
         self.claude:Claude = Claude()
         self.prompt: str = prompt
         self.context: list[Content] | [] = context
         self.system:  list[dict[str, Any]] = self.update_context(context)
-        self.messages: list[dict[str,str]] = []
+
+        if messages:
+            messages_primitives = [message.to_dict()  for message in messages ]
+        else:
+            messages_primitives = []
+        self.messages: list[dict[str,str]] = messages_primitives
         self.tools: Any = tools
 
     def update_context(self, context:list[Content]):
@@ -29,8 +34,17 @@ class ChatSession:
         self.messages.append(message.to_dict())
 
         rawresponse = self.claude.query_adv(self.system, self.messages,tools = self.tools)
-        message = rawresponse.content[0].text
+
+        if isinstance(rawresponse.content[0], ToolUseBlock):
+            # Handle tool use
+            tool_name = rawresponse.content[0].name
+        else:
+            # Handle text
+            message = rawresponse.content[0].text
+
         response = ChatMessage(Role.ASSISTANT, message)
         self.messages.append(response.to_dict())
 
         return rawresponse
+    def is_healthy(self):
+        return self.claude.is_healthy()

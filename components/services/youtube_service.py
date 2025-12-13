@@ -29,6 +29,15 @@ class YouTubeVideo(Content):
 
     def __str__(self) -> str:
         return f"""URL: {self.url}\nTitle: {self.title}\nChannel: {self.author}\nPublish Date: {self.publish_date}"""
+    def to_dict(self):
+        return {
+            'transcript': self.transcript,
+            'title': self.title,
+            'url': self.url,
+            'author': self.author,
+            'publish_date': self.publish_date,
+            'video_duration': self.video_duration
+        }
 
 
 

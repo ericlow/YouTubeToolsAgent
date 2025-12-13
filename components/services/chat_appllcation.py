@@ -1,21 +1,30 @@
 import json
+from datetime import datetime
+from typing import Callable
 
 from components.services.youtube_summary_bot import YouTubeSummaryBot
 from components.services.youtube_service import YouTubeVideo, YouTubeService
+from domain.models.agent_event import AgentEvent
 
 
 class ChatApplication:
 
-    def __init__(self):
+    def __init__(self, videos: list[YouTubeVideo] = [], on_event: Callable=None):
         self.youtube: YouTubeService = YouTubeService()
-        self.videos: list[YouTubeVideo] = []
         self.summary_bot = YouTubeSummaryBot()
+        self.videos = videos
+        self.on_event = on_event
 
     def watch_video(self, url) -> str:
         """returns a id, title of video, author"""
         video = self.youtube.get_video(url)
         self.videos.append(video)
         id = len(self.videos) - 1
+
+        if self.on_event:
+            ae = AgentEvent('video_watched', datetime.now().isoformat(), video.to_dict())
+            self.on_event(ae)
+
         return f"Watched {str(video)}. Id is {id}"
 
     def list_videos(self) -> str:
@@ -37,4 +46,8 @@ class ChatApplication:
     def get_summary(self, id) -> str:
         """returns a summary of the video"""
         video = self.videos[int(id)]
-        return self.summary_bot.summarize_transcript(video.transcript)
+        summary = self.summary_bot.summarize_transcript(video.transcript)
+        if self.on_event:
+            ae = AgentEvent('video_summarized', datetime.now().isoformat(), { 'summary': summary, 'video_id': 0 } )
+            self.on_event(ae)
+        return summary

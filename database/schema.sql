@@ -19,7 +19,6 @@ CREATE TABLE IF NOT EXISTS videos (
     transcript TEXT NOT NULL,
     title VARCHAR(500) NOT NULL,
     channel VARCHAR(255) NOT NULL,
-    summary TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -27,6 +26,7 @@ CREATE TABLE IF NOT EXISTS workspace_videos (
     workspace_id UUID REFERENCES workspaces(workspace_id) ON DELETE CASCADE,
     video_id INTEGER REFERENCES videos(video_id) ON DELETE CASCADE,
     added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    summary TEXT,
     PRIMARY KEY (workspace_id, video_id)
 );
 
