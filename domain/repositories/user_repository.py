@@ -1,19 +1,11 @@
 from sqlalchemy.orm import Session
 
-from api.models import VideoModel, WorkspaceVideoModel
+from api.models import VideoModel, WorkspaceVideoModel, UserModel
 
 
-class VideoRepository:
+class UserRepository:
     def __init__(self, session: Session):
         self.session = session
-
-    def save_video(self, workspace_id:str, video:dict):
-        video = VideoModel(url=video["url"], transcript=video["transcript"], title=video["title"], channel=video["author"])
-        self.session.add(video)
-        self.session.flush()
-        wvm = WorkspaceVideoModel(workspace_id=workspace_id, video_id=video.video_id)
-        self.session.add(wvm)
-        self.session.commit()
 
 
     def save_summary(self, workspace_id:str, video_id:int, summary:str):
@@ -38,3 +30,19 @@ class VideoRepository:
                 'summary': record.summary  # From junction table now
             })
         return result
+
+    def create_user(self) -> dict:
+        user = UserModel()
+        self.session.add(user)
+        self.session.commit()
+        return {
+            'user_id': user.user_id,
+            'created_at': user.created_at.isoformat()
+        }
+
+
+    def get_user(self):
+        pass
+
+    def get_users(self):
+        pass

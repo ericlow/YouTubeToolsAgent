@@ -14,7 +14,6 @@ class VideoModel(Base):
     transcript = Column(Text, nullable=False)
     title = Column(String(500), nullable=False)
     channel = Column(String(255), nullable=False)
-    summary = Column(Text, nullable=True)
     created_at = Column(DateTime, nullable=True, server_default=func.now())
 
     # Indexes
@@ -22,12 +21,11 @@ class VideoModel(Base):
         Index('idx_videos_url', 'url'),
     )
 
-    def __init__(self, url:str, transcript:str, title:str, channel: str, summary: Optional[str] = None) -> None:
+    def __init__(self, url:str, transcript:str, title:str, channel: str) -> None:
         self.url = url
         self.transcript = transcript
         self.title = title
         self.channel = channel
-        self.summary = summary
         self.created_at = datetime.now(timezone.utc)
 
     def __repr__(self) -> str:

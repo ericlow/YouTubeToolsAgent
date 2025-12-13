@@ -6,7 +6,7 @@ from starlette.responses import JSONResponse
 from api.models import Base
 from api.routes.health_check import HealthCheck
 from infrastructure.orm_database import engine
-from api.routes import workspaces, health, videos, messages
+from api.routes import workspaces, health, videos, messages, users
 
 app = FastAPI(title="Youtube Research API")
 
@@ -65,12 +65,13 @@ def root():
     return { "message" : "app is running"}
 
 PATH_HEALTH = "/api/v1/health"
+PATH_USERS  = "/api/v1/users"
 PATH_WORKSPACES = "/api/v1/workspaces"
 PATH_WORKSPACE = f"{PATH_WORKSPACES}/{{workspace_id}}"
 PATH_VIDEOS = f"{PATH_WORKSPACE}/videos"
-PATH_VIDEO = f"{PATH_VIDEOS}/{{video_id}}"
 PATH_MESSAGES = f"{PATH_WORKSPACE}/messages"
 
+app.include_router(users.router, prefix=PATH_USERS)
 app.include_router(workspaces.router, prefix=PATH_WORKSPACES)
 app.include_router(videos.router, prefix=PATH_VIDEOS)
 app.include_router(health.router, prefix=PATH_HEALTH)

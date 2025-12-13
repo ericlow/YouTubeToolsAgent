@@ -1,10 +1,11 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from datetime import datetime
 from typing import Literal
 
 
 @dataclass
 class AgentEvent:
-    type: Literal['message','tool_use', 'tool_result']
+    type: Literal['message','tool_use', 'tool_result', 'video_watched', 'video_summarized']
     timestamp: str
     data: dict
 

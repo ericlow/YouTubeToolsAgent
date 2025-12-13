@@ -1,8 +1,10 @@
 from datetime import datetime, timezone
 from uuid import uuid4
 
-from sqlalchemy import Column, String, ForeignKey, Integer, DateTime, func
+from sqlalchemy import Column, String, ForeignKey, Integer, DateTime, func, Text
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
+
 from .base import Base
 
 class WorkspaceVideoModel(Base):
@@ -24,9 +26,13 @@ ALTER TABLE public.workspace_videos ADD CONSTRAINT workspace_videos_workspace_id
     workspace_id = Column(UUID(as_uuid=True),ForeignKey('workspaces.workspace_id'), primary_key=True)
     video_id = Column(Integer, ForeignKey('videos.video_id'), primary_key=True)
     added_at = Column(DateTime, nullable=False, server_default=func.now())
+    summary = Column(Text, nullable=True)
 
     # Indexes
     # none
+
+    # Relationships
+    video = relationship("VideoModel")
 
     def __init__(self, workspace_id:str, video_id:Integer):
         self.workspace_id = workspace_id

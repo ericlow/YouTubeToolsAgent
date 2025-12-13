@@ -1,7 +1,7 @@
 from typing import Any
 
 from anthropic import Stream
-from anthropic.types import Message, RawMessageStreamEvent
+from anthropic.types import Message, RawMessageStreamEvent, ToolUseBlock
 
 from components.anthropic.anthropic_service import Claude
 from components.anthropic.chat_message import ChatMessage
@@ -34,7 +34,14 @@ class ChatSession:
         self.messages.append(message.to_dict())
 
         rawresponse = self.claude.query_adv(self.system, self.messages,tools = self.tools)
-        message = rawresponse.content[0].text
+
+        if isinstance(rawresponse.content[0], ToolUseBlock):
+            # Handle tool use
+            tool_name = rawresponse.content[0].name
+        else:
+            # Handle text
+            message = rawresponse.content[0].text
+
         response = ChatMessage(Role.ASSISTANT, message)
         self.messages.append(response.to_dict())
 

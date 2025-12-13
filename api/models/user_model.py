@@ -1,6 +1,6 @@
 from datetime import timezone, datetime
 
-from sqlalchemy import Column, Integer, DateTime
+from sqlalchemy import Column, Integer, DateTime, func
 
 from .base import Base
 
@@ -15,10 +15,11 @@ class UserModel(Base):
     __tablename__ = 'users'
 
     user_id = Column(Integer, primary_key=True, autoincrement=True)
-    created_at = Column(DateTime, nullable = False)
+    created_at = Column(DateTime, nullable=False, server_default=func.now())
+
 
     def __init__(self):
-        self.created_at = datetime.now(timezone.utc)
+        pass
 
     def __repr__(self) -> str:
         """debug string"""
