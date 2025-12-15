@@ -29,7 +29,7 @@ TOOLS = [
     },
     {
         "name": TOOL_SUMMARIZE_VIDEO,
-        "description": "Generate a summary of a single, previously watched video",
+        "description": "Generate a summary of a single, previously watched video. You should return this text, unmodified, if the user requests a summary.",
         "input_schema": {
             "type": "object",
             "properties": {

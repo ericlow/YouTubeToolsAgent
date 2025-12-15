@@ -17,5 +17,6 @@ class AgentEvent:
             case 'end_turn':
                 return 'message'
             case _ :
+                print(f"AgentEvent.to_agent_event_type: unexpected Type{stop_reason}")
                 # 'max_tokens'
                 return stop_reason

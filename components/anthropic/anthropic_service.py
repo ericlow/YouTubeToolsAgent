@@ -15,7 +15,7 @@ class Claude:
     MODEL_HAIKU = "claude-3-5-haiku-20241022"       # $0.80 / MTOK
 
     MODEL_DEFAULT = MODEL_HAIKU
-
+    CACHE_MAX = 4
     def __init__(self, model: str = MODEL_DEFAULT, max_tokens:int=8192, creativity:float = 0):
         """
         Constructor
@@ -67,7 +67,7 @@ class Claude:
         return response.content[0].text
 
     def query_adv(self, system: list[dict[str,Any]], message:list[dict[str,str]], tools: Any| None) -> Message:
-
+        print(f"QUERY ADV: {message}")
         response = self.client.messages.create(
             model=self.model,
             max_tokens=self.max_tokens,
@@ -96,7 +96,7 @@ class Claude:
                 # no caching, prompts are too small and there is no benefit
             })
 
-        for content in contentlist:
+        for content in contentlist[:Claude.CACHE_MAX]:
             block = {
                 "type":"text",
                 "text":f"""

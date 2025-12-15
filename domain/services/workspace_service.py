@@ -10,9 +10,12 @@ from api.models import MessageModel
 from components.agents.chat_agent import ChatAgent
 from components.anthropic.chat_message import ChatMessage
 from components.anthropic.content import Content
+from components.services.web_chat_appllcation import WebChatApplication
+from components.services.youtube_service import YouTubeVideo
 from domain.models.agent_event import AgentEvent
 from domain.repositories.message_repository import MessageRepository
-from domain.repositories.video_repository import VideoRepository
+from domain.repositories.video_repository import VideoRepository, GetVideoArgs, GetVideoArgsUrl, \
+    GetVideoArgsWorkspaceVideoId
 from infrastructure.orm_database import get_session
 
 
@@ -38,6 +41,7 @@ class WorkspaceService:
         return self.message_repository.get_messages(workspace_id)
 
     def send_message(self, workspace_id, message:str):
+
         def handle_event(event: AgentEvent):
             print(f"Message\nType:{event.type} \nMessage: {event.data}")
             if event.type in ('message','tool_use', 'tool_result'):
@@ -46,7 +50,9 @@ class WorkspaceService:
                                                    event.data)
             elif event.type == 'video_watched':
                 video = event.data
-                self.video_repository.save_video(workspace_id, video)
+                # we are saving the video in the chatapplication. the chat application and the workspace service are fighting for control
+#                self.video_repository.save_video(workspace_id, video)
+
             elif event.type == 'video_summarized':
                 summary = event.data["summary"]
                 video_id = event.data["video_id"]
@@ -54,18 +60,25 @@ class WorkspaceService:
             else: # event type is unknown
                 print(f'unknown event type{event.type}')
 
+#        app = WebChatApplication(on_event=handle_event, video_repository=self.video_repository,workspace_id=workspace_id)
+        # app.watch_video("https://www.youtube.com/watch?v=r95EunXAjBU")
+        # videos = app.list_videos()
+        # print(videos)
+        # tran = app.get_transcript(id=12)
+        # print(tran)
+        # summary = app.get_summary(id=12)
+        # print(summary)
+        # return "{'OK':'OK'}"
         self.message_repository.create_message(workspace_id, MessageModel.ROLE_USER, message)
         messages = self.message_repository.get_messages(workspace_id)
-
-
         agent_messages = [ChatMessage(Role(message.role), message.content) for message in messages]
-        agent_context: list[Content] = []
+        videos = self.video_repository.get_videos(workspace_id=workspace_id)
+        agent_context= [YouTubeVideo(url=video["url"], transcript=video["transcript"], title=video["title"], author=video["author"], publish_date="", video_duration=0) for video in videos]
 
         # Ask Agent to take next step
-        agent = ChatAgent(agent_context, agent_messages, on_event=handle_event)
+        agent = ChatAgent(agent_context, agent_messages, on_event=handle_event, workspace_id=workspace_id, video_repository=self.video_repository)
         agent_message = agent.chat(message)
 
         self.message_repository.create_message(workspace_id, MessageModel.ROLE_ASSISTANT, agent_message.final_response)
 
         return agent_message.final_response
-

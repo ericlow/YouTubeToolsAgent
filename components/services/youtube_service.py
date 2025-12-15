@@ -1,5 +1,6 @@
 import datetime
 import os
+from pathlib import Path
 from typing import Optional
 
 from googleapiclient.discovery import build
@@ -54,6 +55,10 @@ class YouTubeService:
     def get_video(self, url) -> YouTubeVideo:
         self.logger.debug(f"Retrieving video:{url}")
         if self.mock:
+            path = Path(__file__).parent
+            file_path = path / "transcript.txt"
+            with open(file_path, 'r') as f:
+                content = f.read()
             return YouTubeVideo(url=url, transcript="this is a transcript", title="mock video", author='mock author', publish_date=datetime.date.today(),video_duration=65)
         else:
             return get_video(url)

@@ -23,6 +23,7 @@ ALTER TABLE public.workspace_videos ADD CONSTRAINT workspace_videos_workspace_id
     __tablename__ = 'workspace_videos'
 
     # Columns
+    # these two foreign keys marked both as primary keys represent a natural composite key
     workspace_id = Column(UUID(as_uuid=True),ForeignKey('workspaces.workspace_id'), primary_key=True)
     video_id = Column(Integer, ForeignKey('videos.video_id'), primary_key=True)
     added_at = Column(DateTime, nullable=False, server_default=func.now())
@@ -34,7 +35,18 @@ ALTER TABLE public.workspace_videos ADD CONSTRAINT workspace_videos_workspace_id
     # Relationships
     video = relationship("VideoModel")
 
-    def __init__(self, workspace_id:str, video_id:Integer):
+    def __init__(self, workspace_id:str, video_id:Integer, summary:str=None):
         self.workspace_id = workspace_id
         self.video_id = video_id
         self.added_at = datetime.now(timezone.utc)
+        self.summary = summary
+
+    def to_dict(self):
+        return {
+            'video_id': self.video_id,
+            'url': self.video.url,
+            'transcript': self.video.transcript,
+            'title': self.video.title,
+            'author': self.video.channel,
+            'summary': self.summary  # From junction table now
+        }

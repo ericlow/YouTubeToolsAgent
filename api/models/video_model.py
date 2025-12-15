@@ -10,7 +10,7 @@ class VideoModel(Base):
 
     # Columns
     video_id = Column(Integer, primary_key=True, autoincrement=True)
-    url = Column(Text, nullable=False)
+    url = Column(Text, nullable=False, unique=True)     # the unique constraint ensures we do not have a duplicate value in the DB.
     transcript = Column(Text, nullable=False)
     title = Column(String(500), nullable=False)
     channel = Column(String(255), nullable=False)
@@ -18,7 +18,6 @@ class VideoModel(Base):
 
     # Indexes
     __table_args__ = (
-        Index('idx_videos_url', 'url'),
     )
 
     def __init__(self, url:str, transcript:str, title:str, channel: str) -> None:
@@ -31,3 +30,12 @@ class VideoModel(Base):
     def __repr__(self) -> str:
         """debug string"""
         return f"VideoModel(id={self.video_id}, title='{self.title}')"
+
+    def to_dict(self) -> dict:
+        return {
+            'video_id': self.video_id,
+            'url': self.url,
+            'transcript': self.transcript,
+            'title': self.title,
+            'author': self.channel
+        }
