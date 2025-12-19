@@ -39,12 +39,12 @@ class WebChatApplication(ChatApplication):
             record["author"] = video.author
 
         db_id = self.video_repostory.save_video(self.workspace_id, record)
-        videodict = video.to_dict()
+
         if self.on_event:
-            ae = AgentEvent('video_watched', datetime.now().isoformat(), videodict)
+            ae = AgentEvent('video_watched', datetime.now().isoformat(), record)
             self.on_event(ae)
 
-        return f"Watched {str(video)}, transcript can be retrieved with the get_transcript tool.  The id is {db_id}"
+        return f"Watched {str(record)}, transcript can be retrieved with the get_transcript tool.  The id is {db_id}"
 
     def list_videos(self) -> str:
         """returns a json with id, title of video, and author"""
@@ -55,7 +55,8 @@ class WebChatApplication(ChatApplication):
     def get_transcript(self, id:int) -> str:
         """returns the complete transcript of a video"""
         print(f"get_transcript{id}")
-        video = self.video_repostory.get_video(self.workspace_id, id)
+        getVideoArgs = GetVideoArgsWorkspaceVideoId(self.workspace_id, id)
+        video = self.video_repostory.get_video(getVideoArgs)
         return video["transcript"]
 
     def get_summary(self, id:int) -> str:

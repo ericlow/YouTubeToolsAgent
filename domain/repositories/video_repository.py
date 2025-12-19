@@ -35,22 +35,22 @@ class VideoRepository:
     def save_video(self, workspace_id:str, video:dict) -> int:
 
         # get video
-        video = self.session.query(VideoModel).filter_by()
+        videomodel = self.session.query(VideoModel).filter_by(url=video["url"]).first()
         # if video does not exist, create it
-        if not video:
-            video = VideoModel(url=video["url"], transcript=video["transcript"], title=video["title"], channel=video["author"])
-            self.session.add(video)
+        if not videomodel:
+            videomodel = VideoModel(url=video["url"], transcript=video["transcript"], title=video["title"], channel=video["author"])
+            self.session.add(videomodel)
             self.session.flush()
 
         # get workspace_video
-        workspace_video = self.session.query(WorkspaceVideoModel).filter_by(workspace_id=workspace_id, video_id=video.video_id).first()
+        workspace_video = self.session.query(WorkspaceVideoModel).filter_by(workspace_id=workspace_id, video_id=videomodel.video_id).first()
         # if does not exist, create it
         if not workspace_video:
-            wvm = WorkspaceVideoModel(workspace_id=workspace_id, video_id=video.video_id)
+            wvm = WorkspaceVideoModel(workspace_id=workspace_id, video_id=videomodel.video_id)
             self.session.add(wvm)
         self.session.commit()
 
-        return video.video_id
+        return videomodel.video_id
 
     def save_summary(self, workspace_id:str, video_id:int, summary:str):
         workspace_video = self.session.query(WorkspaceVideoModel).filter_by(workspace_id=workspace_id, video_id=video_id).first()

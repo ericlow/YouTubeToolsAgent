@@ -39,7 +39,7 @@ class ChatAgent:
             they do, their role, or any other questions about the tools that is not adequately addressed in the
             tool description, you can proactively ask questions at any time.
             
-            When you use get_summary tool, the result is already a final summary ready for the user.
+            When you use summarize_videos tool, the result is already a final summary ready for the user.
             Do not re-summarize or reprocess the summary - present it directly.
             
             # Communication Style
