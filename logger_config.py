@@ -23,7 +23,7 @@ class WhiteListFilter(logging.Filter):
         return False
 
 def create_console_handler():
-    whitelist = ['components', '__main__']
+    whitelist = ['api','domain','infrastructure','components', '__main__']
 
     console_handler = colorlog.StreamHandler()
     console_handler.addFilter(WhiteListFilter(whitelist))

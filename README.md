@@ -176,6 +176,50 @@ python database/apply_schema.py --fresh
 python database/apply_schema.py
 ```
 
+---
+
+# Frontend Setup
+
+The frontend is a React + TypeScript application built with Vite.
+
+## Prerequisites
+- Node.js (v18 or higher recommended)
+- npm or bun
+
+## Installation
+
+1. Navigate to the frontend directory:
+```bash
+cd frontend
+```
+
+2. Install dependencies:
+```bash
+npm install
+# or if using bun
+bun install
+```
+
+## Running the Frontend
+
+Start the development server:
+```bash
+npm run dev
+# or if using bun
+bun run dev
+```
+
+The frontend will be available at `http://localhost:8080`
+
+## Building for Production
+
+```bash
+npm run build
+npm run preview
+```
+
+---
+
 # Application 2
 
 ## Start the app

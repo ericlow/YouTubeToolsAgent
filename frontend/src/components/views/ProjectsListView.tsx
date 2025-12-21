@@ -20,7 +20,7 @@ export function ProjectsListView() {
         showAdd
         onAdd={() => setShowNewProject(true)}
       />
-      
+
       <ScrollArea className="flex-1">
         {projects.length === 0 ? (
           <EmptyState

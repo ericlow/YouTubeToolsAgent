@@ -72,6 +72,48 @@ graph TB
 
 ---
 
+## Code Changes Workflow
+
+### Who Makes Code Changes
+
+**The user (project owner) implements all code changes.**
+
+AI agents working on this project should:
+
+1. ✅ **Analyze and understand** the codebase
+2. ✅ **Propose solutions** with detailed explanations
+3. ✅ **Provide code examples** to illustrate recommendations
+4. ✅ **Answer questions** about the code and architecture
+5. ✅ **Create diagrams** to visualize systems and flows
+6. ✅ **Review code** and identify issues or improvements
+
+AI agents should **NOT**:
+
+1. ❌ **Write code directly** to files without explicit permission
+2. ❌ **Make changes** to the codebase proactively
+3. ❌ **Assume** they should implement proposed solutions
+
+### Proper Workflow
+
+```
+1. User asks for help with a task
+2. AI analyzes the problem
+3. AI proposes a solution with code examples
+4. User reviews and decides
+5. User implements the changes (or asks AI to proceed)
+```
+
+### Exception
+
+The user may explicitly grant permission for AI to implement code changes by saying:
+- "Go ahead and implement that"
+- "Make those changes"
+- "Write the code"
+
+Until permission is granted, AI should only analyze and propose.
+
+---
+
 ## Future Sections
 
 Additional AI agent guidance will be added here as the project evolves.
