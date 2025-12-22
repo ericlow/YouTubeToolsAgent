@@ -1,3 +1,5 @@
+from anthropic.types import Message
+
 from components.anthropic.role import Role
 
 class ChatMessage:
@@ -10,3 +12,9 @@ class ChatMessage:
             "role": self.role.value,
             "content": self.content
         }
+
+    def response_to_dict(self, response: Message):
+        retval = dict()
+        retval["role"] = response.role
+        retval["content"] = [c.model_dump() for c in response.content]
+        return retval

@@ -30,21 +30,21 @@ class ChatSession:
         self.system  = Claude.create_system_prompt(self.prompt, context)
         return self.system
 
+    def response_to_dict(self, response: Message):
+        retval = dict()
+        retval["role"] = response.role
+        retval["content"] = [c.model_dump() for c in response.content]
+        return retval
+
     def send(self, message :ChatMessage) -> Message | Stream[RawMessageStreamEvent]:
         self.messages.append(message.to_dict())
 
         rawresponse = self.claude.query_adv(self.system, self.messages,tools = self.tools)
-
-        if isinstance(rawresponse.content[0], ToolUseBlock):
-            # Handle tool use
-            tool_name = rawresponse.content[0].name
-        else:
-            # Handle text
-            message = rawresponse.content[0].text
-
-        response = ChatMessage(Role.ASSISTANT, message)
-        self.messages.append(response.to_dict())
+        self.messages.append(self.response_to_dict(rawresponse))
 
         return rawresponse
+
+
+
     def is_healthy(self):
         return self.claude.is_healthy()

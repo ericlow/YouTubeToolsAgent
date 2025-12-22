@@ -6,6 +6,7 @@ from anthropic.types import ToolUseBlock, Message
 
 from components.anthropic.chat_message import ChatMessage
 from components.anthropic.chat_session import ChatSession
+from components.anthropic.chat_tooluse_content import ToolUseContent
 from components.anthropic.content import Content
 from components.anthropic.role import Role
 from components.services.chat_appllcation import ChatApplication
@@ -69,31 +70,33 @@ class ChatAgent:
             print(f"\t\t\t{item.to_dict()}")
 
 
-    def chat(self, message:str) -> AgentResult:
-        chatMessage = ChatMessage(Role.USER, message)
-        print(f"chat: {message}")
+    def chat(self, user_message:str) -> AgentResult:
+        chatMessage = ChatMessage(Role.USER, user_message)
+        print(f"chat: {user_message}")
         response = self.session.send(chatMessage)
         self.print_response(response)
-        ae = AgentEvent(AgentEvent.to_agent_event_type(response.stop_reason), datetime.now().isoformat(), response.content[0].text)
-        if self.on_event: self.on_event(ae)
+
+        if self.on_event:
+            ae = AgentEvent(AgentEvent.to_agent_event_type(response.stop_reason), datetime.now().isoformat(), AgentEvent.response_to_dict(response))
+            self.on_event(ae)
 
         while True:
             if response.stop_reason != 'tool_use': break
             else:
-
-                # HACK ELOW somtimes we have 2 content, sometimes 1, sometimes its a ToolUseBlock, sometimes it's something else....
                 print("Tool Use ->")
                 toolblock=next((item for item in response.content if item.type =='tool_use'),None)
-                tool = toolblock.name
+                toolname = toolblock.name
                 input = toolblock.input
-                tool_response = self.tools.execute_tool(tool, input)
-                print(f"\tTool Use Result: {tool_response}")
-                response = self.session.send(ChatMessage(Role.ASSISTANT,tool_response))
+                tooluse_id = toolblock.id
+                tooluse_result = self.tools.execute_tool(toolname, input)
+                print(f"\tTool Use Result: {tooluse_result}")
+                tooluse_content = ToolUseContent(tooluse_id, tooluse_result)
+                response = self.session.send(ChatMessage(Role.USER, tooluse_content.to_dict()))
                 self.print_response(response)
 
                 # ae = AgentEvent('tool_result', datetime.now() ,event_detail)
                 # if self.on_event: self.on_event(ae)
-        exit_message = json.dumps(response.to_dict())
+        exit_message = json.dumps(response.model_dump())
         if response.content is None:
             print("response.content is None")
         elif len(response.content) == 0:
@@ -104,7 +107,7 @@ class ChatAgent:
             print("response.content[0] has unexpected type")
         else:
             exit_message = response.content[0].text
-        self.logger.debug(f"tool exit messsage: {exit_message}")
+        self.logger.debug(f"tool exit message: {exit_message}")
 
         # Return AgentResult with all messages and final response
         return AgentResult(

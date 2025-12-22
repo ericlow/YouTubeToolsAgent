@@ -7,7 +7,7 @@ class ToolExecutor:
     def __init__(self, application: ChatApplication):
         self.app = application
 
-    def execute_tool(self, tool_name: str, tool_input:dict[str, Any]):
+    def execute_tool(self, tool_name: str, tool_input:dict[str, Any]) -> str:
         """execute a tool and return the result as a string"""
         if tool_name == TOOL_WATCH_VIDEO:
             url = tool_input["url"]

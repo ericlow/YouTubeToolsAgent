@@ -1,7 +1,8 @@
 import os
-
 import colorlog
 import logging
+
+whitelist = ['api', 'domain', 'infrastructure', 'components', '__main__']
 
 def create_file_handler():
     file_handler = logging.FileHandler('app.log')
@@ -23,8 +24,6 @@ class WhiteListFilter(logging.Filter):
         return False
 
 def create_console_handler():
-    whitelist = ['components', '__main__']
-
     console_handler = colorlog.StreamHandler()
     console_handler.addFilter(WhiteListFilter(whitelist))
     console_handler.setFormatter(colorlog.ColoredFormatter(
@@ -37,8 +36,6 @@ def create_console_handler():
         }
     ))
     return console_handler
-
-
 
 def setup_logging():
 
