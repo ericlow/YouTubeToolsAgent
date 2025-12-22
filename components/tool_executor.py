@@ -14,16 +14,16 @@ class ToolExecutor:
             return self.app.watch_video(url)
 
         if tool_name == TOOL_SUMMARIZE_VIDEO:
-            index = tool_input["index"]
+            index = tool_input["id"]
             return self.app.get_summary(index)
 
         if tool_name == TOOL_LIST_VIDEOS:
             return self.app.list_videos()
 
         if tool_name == TOOL_GET_TRANSCRIPT:
-            index = tool_input["index"]
+            index = tool_input["id"]
             return self.app.get_transcript(index)
 
         if tool_name == TOOL_SUMMARIZE_VIDEO:
-            index = tool_input["index"]
+            index = tool_input["id"]
             return self.app.get_summary(index)

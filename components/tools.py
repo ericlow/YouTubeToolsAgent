@@ -7,7 +7,7 @@ TOOL_GET_TRANSCRIPT = "get_transcript"
 TOOLS = [
     {
         "name": TOOL_WATCH_VIDEO,
-        "description": "Load a YouTube video by URL and extract its transcript.  The system caches the video in an enumerated collection, retrievable by the list_videos tool",
+        "description": "Load a YouTube video by URL and extract its transcript.  The system caches the video in a database, retrievable by the list_videos tool",
         "input_schema": {
             "type": "object",
             "properties": {
@@ -21,7 +21,7 @@ TOOLS = [
     },
     {
         "name": TOOL_LIST_VIDEOS,
-        "description": "List all currently loaded videos. Returns an enumerated list of previously watched videos",
+        "description": "List all currently loaded videos. Returns a list of previously watched videos",
         "input_schema": {
             "type": "object",
             "properties": {}
@@ -33,12 +33,12 @@ TOOLS = [
         "input_schema": {
             "type": "object",
             "properties": {
-                "index": {
+                "id": {
                     "type": "integer",
-                    "description":"this is the index of the video. The index and video id can be retrieved from the list_videos tool"
+                    "description":"this is the id of the video. The video id can be retrieved from the list_videos tool"
                 }
             },
-            "required":["index"]
+            "required":["id"]
         }
     },
     {
@@ -47,12 +47,12 @@ TOOLS = [
         "input_schema": {
             "type": "object",
             "properties": {
-                "index": {
+                "id": {
                     "type": "integer",
-                    "description":"this is the index of the video. The index and video id can be retrieved from the list_videos tool"
+                    "description":"this is the id of the video. The video id can be retrieved from the list_videos tool"
                 }
             },
-            "required":["index"]
+            "required":["id"]
         }
     },
 ]
