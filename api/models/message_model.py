@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from sqlalchemy import Column, Integer, String, Text, DateTime, func, Index, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, func, Index, ForeignKey, JSON
 from sqlalchemy.dialects.postgresql import UUID
 from .base import Base
 
@@ -12,7 +12,7 @@ class MessageModel(Base):
     message_id = Column(Integer, primary_key=True, autoincrement=True)
     workspace_id = Column(UUID(as_uuid=True), ForeignKey('workspaces.workspace_id'), nullable = False)
     role = Column(String(20), nullable = False)
-    content = Column(Text, nullable  = False)
+    content = Column(JSON, nullable  = False)
     created_at = Column(DateTime, nullable = True, server_default=func.now())
 
     # Indexes

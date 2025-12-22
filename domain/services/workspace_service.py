@@ -60,18 +60,14 @@ class WorkspaceService:
             else: # event type is unknown
                 print(f'unknown event type{event.type}')
 
-#        app = WebChatApplication(on_event=handle_event, video_repository=self.video_repository,workspace_id=workspace_id)
-        # app.watch_video("https://www.youtube.com/watch?v=r95EunXAjBU")
-        # videos = app.list_videos()
-        # print(videos)
-        # tran = app.get_transcript(id=12)
-        # print(tran)
-        # summary = app.get_summary(id=12)
-        # print(summary)
-        # return "{'OK':'OK'}"
+        # create + save message to send
         self.message_repository.create_message(workspace_id, MessageModel.ROLE_USER, message)
+
+        # retrieve messages
         messages = self.message_repository.get_messages(workspace_id)
         agent_messages = [ChatMessage(Role(message.role), message.content) for message in messages]
+
+        # retrieve videos
         videos = self.video_repository.get_videos(workspace_id=workspace_id)
         agent_context= [YouTubeVideo(url=video["url"], transcript=video["transcript"], title=video["title"], author=video["author"], publish_date="", video_duration=0) for video in videos]
 
@@ -82,3 +78,7 @@ class WorkspaceService:
         self.message_repository.create_message(workspace_id, MessageModel.ROLE_ASSISTANT, agent_message.final_response)
 
         return agent_message.final_response
+
+
+
+

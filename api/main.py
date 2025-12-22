@@ -7,7 +7,9 @@ from api.models import Base
 from api.routes.health_check import HealthCheck
 from infrastructure.orm_database import engine
 from api.routes import workspaces, health, videos, messages, users
+from logger_config import setup_logging
 
+setup_logging()
 app = FastAPI(title="Youtube Research API")
 
 @asynccontextmanager

@@ -50,6 +50,8 @@ class WebChatApplication(ChatApplication):
         """returns a json with id, title of video, and author"""
         print(f"list_videos()")
         videos = self.video_repostory.get_videos(self.workspace_id)
+        if len(videos) == 0:
+            return "no videos have been watched"
         return json.dumps(videos, indent=2)
 
     def get_transcript(self, id:int) -> str:

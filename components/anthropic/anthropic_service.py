@@ -61,7 +61,7 @@ class Claude:
 
         return response.content[0].text
 
-    def query_basic(self, system: list[dict[str,Any]], message:list[dict[str,str]], tools: Any| None) -> str:
+    def query_basic(self, system: list[dict[str,Any]], message:list[dict[str,Any]], tools: Any| None) -> str:
         (json.dumps(system,indent=2))
         response = self.query_adv(system, message, tools)
         return response.content[0].text
@@ -76,6 +76,7 @@ class Claude:
             messages=message,
             tools=tools
         )
+
         return response
 
     def is_healthy(self):
