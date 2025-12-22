@@ -1,24 +1,15 @@
 from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel
-
-from api.models import MessageModel
-from api.routes.messages import MessageRepository
-from components.anthropic.chat_message import ChatMessage
 from components.anthropic.role import Role
 from api.models import MessageModel
 from components.agents.chat_agent import ChatAgent
 from components.anthropic.chat_message import ChatMessage
-from components.anthropic.content import Content
-from components.services.web_chat_appllcation import WebChatApplication
 from components.services.youtube_service import YouTubeVideo
 from domain.models.agent_event import AgentEvent
 from domain.repositories.message_repository import MessageRepository
-from domain.repositories.video_repository import VideoRepository, GetVideoArgs, GetVideoArgsUrl, \
-    GetVideoArgsWorkspaceVideoId
-from infrastructure.orm_database import get_session
-
-
+from domain.repositories.video_repository import VideoRepository
+from logger_config import  getLogger
 
 class CreateWorkspaceRequest(BaseModel):
     name: str
@@ -37,13 +28,15 @@ class WorkspaceService:
     def __init__(self, message_repository:MessageRepository, video_repository:VideoRepository):
         self.message_repository = message_repository
         self.video_repository = video_repository
+        self.logger = getLogger(__name__)
+
     def getMessages(self, workspace_id, cursor):
         return self.message_repository.get_messages(workspace_id)
 
     def send_message(self, workspace_id, message:str):
 
         def handle_event(event: AgentEvent):
-            print(f"Message\nType:{event.type} \nMessage: {event.data}")
+            self.logger.debug(f"Message\nType:{event.type} \nMessage: {event.data}")
             if event.type in ('message','tool_use', 'tool_result'):
                 self.message_repository.create_message(workspace_id,
                                                    MessageModel.ROLE_ASSISTANT,
@@ -58,7 +51,7 @@ class WorkspaceService:
                 video_id = event.data["video_id"]
                 self.video_repository.save_summary(workspace_id, video_id, summary)
             else: # event type is unknown
-                print(f'unknown event type{event.type}')
+                self.logger.info(f'unknown event type{event.type}')
 
         # create + save message to send
         self.message_repository.create_message(workspace_id, MessageModel.ROLE_USER, message)

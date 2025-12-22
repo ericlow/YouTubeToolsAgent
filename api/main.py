@@ -1,15 +1,16 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from sqlalchemy.exc import OperationalError
 from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import JSONResponse
 from api.models import Base
-from api.routes.health_check import HealthCheck
 from infrastructure.orm_database import engine
 from api.routes import workspaces, health, videos, messages, users
-from logger_config import setup_logging
+from logger_config import setup_logging, getLogger
 
 setup_logging()
+logger = getLogger(__name__)
+
 app = FastAPI(title="Youtube Research API")
 
 @asynccontextmanager
@@ -23,9 +24,9 @@ async def lifespan(app: FastAPI):
         # Startup: Create database tables
         Base.metadata.create_all(bind=engine)
     except OperationalError as e:
-        print("\n❌ ERROR: Cannot connect to database")
-        print("\nMake sure PostgreSQL is running")
-        print(e)
+        logger.error("\n❌ ERROR: Cannot connect to database")
+        logger.error("\nMake sure PostgreSQL is running")
+        logger.error(e)
         raise SystemExit(1)  # Exit cleanly instead of showing stack trace
     yield
 

@@ -67,7 +67,6 @@ class Claude:
         return response.content[0].text
 
     def query_adv(self, system: list[dict[str,Any]], message:list[dict[str,str]], tools: Any| None) -> Message:
-        print(f"QUERY ADV: {message}")
         response = self.client.messages.create(
             model=self.model,
             max_tokens=self.max_tokens,

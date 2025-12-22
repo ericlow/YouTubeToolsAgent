@@ -1,24 +1,19 @@
 import json
 from datetime import datetime
 from typing import Any
-
-from anthropic.types import ToolUseBlock, Message
-
+from anthropic.types import Message
 from components.anthropic.chat_message import ChatMessage
 from components.anthropic.chat_session import ChatSession
 from components.anthropic.chat_tooluse_content import ToolUseContent
 from components.anthropic.content import Content
 from components.anthropic.role import Role
-from components.services.chat_appllcation import ChatApplication
 from components.services.web_chat_appllcation import WebChatApplication
 from domain.models.agent_event import AgentEvent
 from domain.models.agent_result import AgentResult
-
 from components.tool_executor import ToolExecutor
 from components.tools import TOOLS
 from domain.repositories.video_repository import VideoRepository
 from logger_config import getLogger
-
 
 class ChatAgent:
     def __init__(self, context: list[Content] = [], messages: list[ChatMessage]=[], tools:Any =TOOLS, on_event=None, workspace_id:int= 0, video_repository: VideoRepository=None):
@@ -55,24 +50,24 @@ class ChatAgent:
              
         """
         self.session = ChatSession(self.prompt, tools=tools, context=context, messages=messages)
-
+        self.logger.debug("CHAT AGENT CREATED")
 
     def print_response(self, response:Message):
-        print(f"\tResponse")
-        print(f"\t\tstop reason: {response.stop_reason}")
-        print(f"\t\ttype: {response.type}")
-        print(f"\t\tcontent")
+        self.logger.debug(f"\tResponse")
+        self.logger.debug(f"\t\tstop reason: {response.stop_reason}")
+        self.logger.debug(f"\t\ttype: {response.type}")
+        self.logger.debug(f"\t\tcontent")
         i = 0
         for item in response.content:
-            print(f"\t\t\titem: {i}")
+            self.logger.debug(f"\t\t\titem: {i}")
             i+=1
-            print(f"\t\t\tType: {item.type}")
-            print(f"\t\t\t{item.to_dict()}")
+            self.logger.debug(f"\t\t\tType: {item.type}")
+            self.logger.debug(f"\t\t\t{item.to_dict()}")
 
 
     def chat(self, user_message:str) -> AgentResult:
+        self.logger.info(f"chat({user_message})")
         chatMessage = ChatMessage(Role.USER, user_message)
-        print(f"chat: {user_message}")
         response = self.session.send(chatMessage)
         self.print_response(response)
 
@@ -83,13 +78,13 @@ class ChatAgent:
         while True:
             if response.stop_reason != 'tool_use': break
             else:
-                print("Tool Use ->")
+                self.logger.debug("Tool Use ->")
                 toolblock=next((item for item in response.content if item.type =='tool_use'),None)
                 toolname = toolblock.name
                 input = toolblock.input
                 tooluse_id = toolblock.id
                 tooluse_result = self.tools.execute_tool(toolname, input)
-                print(f"\tTool Use Result: {tooluse_result}")
+                self.logger.debug(f"\tTool Use Result: {tooluse_result}")
                 tooluse_content = ToolUseContent(tooluse_id, tooluse_result)
                 response = self.session.send(ChatMessage(Role.USER, tooluse_content.to_dict()))
                 self.print_response(response)
@@ -98,13 +93,13 @@ class ChatAgent:
                 # if self.on_event: self.on_event(ae)
         exit_message = json.dumps(response.model_dump())
         if response.content is None:
-            print("response.content is None")
+            self.logger.debug("response.content is None")
         elif len(response.content) == 0:
-            print("response.content is 0 len")
+            self.logger.debug("response.content is 0 len")
         elif len(response.content) > 1:
             self.print_response(response)
         elif not hasattr(response.content[0], 'text'):
-            print("response.content[0] has unexpected type")
+            self.logger.debug("response.content[0] has unexpected type")
         else:
             exit_message = response.content[0].text
         self.logger.debug(f"tool exit message: {exit_message}")
