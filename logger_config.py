@@ -6,6 +6,7 @@ whitelist = ['api', 'domain', 'infrastructure', 'components', '__main__']
 
 def create_file_handler():
     file_handler = logging.FileHandler('app.log')
+    file_handler.addFilter(WhiteListFilter(whitelist))
     file_handler.setFormatter(logging.Formatter(
         '%(asctime)s - %(levelname)s - %(message)s'
     ))
@@ -41,7 +42,7 @@ def setup_logging():
 
     # setup root logger
     logger = logging.getLogger()
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
     logger.addHandler(create_console_handler())
     logger.addHandler(create_file_handler())
 

@@ -1,6 +1,8 @@
 from typing import Protocol
 from sqlalchemy.orm import Session
 from api.models import VideoModel, WorkspaceVideoModel
+from logger_config import getLogger
+
 
 class GetVideoArgs(Protocol):
     def execute(self, session: Session) -> dict | None: ...
@@ -19,9 +21,10 @@ class GetVideoArgsWorkspaceVideoId(GetVideoArgs):
     def __init__(self, workspace_id:str, video_id:int) -> VideoModel:
         self.workspace_id = workspace_id
         self.video_id = video_id
+        self.logger = getLogger(__name__)
 
     def execute(self, session: Session) -> dict | None:
-        print(f"{self.workspace_id} / {self.video_id}")
+        self.logger.debug(f"{self.workspace_id} / {self.video_id}")
         workspace_video = session.query(WorkspaceVideoModel).filter_by(workspace_id=self.workspace_id, video_id=self.video_id).first()
         return workspace_video.to_dict()
 

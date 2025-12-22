@@ -2,7 +2,9 @@ from dataclasses import dataclass
 from typing import Literal
 
 from anthropic.types import Message
+from logger_config import getLogger
 
+logger = getLogger(__name__)
 
 @dataclass
 class AgentEvent:
@@ -22,7 +24,7 @@ class AgentEvent:
             case 'end_turn':
                 return 'message'
             case _ :
-                print(f"AgentEvent.to_agent_event_type: unexpected Type{stop_reason}")
+                logger.error(f"AgentEvent.to_agent_event_type: unexpected Type{stop_reason}")
                 # 'max_tokens'
                 return stop_reason
 

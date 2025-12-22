@@ -1,6 +1,10 @@
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 from infrastructure.orm_database import SessionLocal
+from logger_config import  getLogger
+
+logger = getLogger(__name__)
+
 
 class HealthCheck:
     @staticmethod
@@ -13,7 +17,7 @@ class HealthCheck:
 
             return True, f"connected to {engine.url.database} on {engine.url.host}"
         except Exception as e:
-            print(e)
+            logger.error(e)
             return False, "error connecting to DB"
         finally:
             if db: db.close()

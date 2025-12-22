@@ -4,9 +4,10 @@ from typing import Callable
 
 from components.services.chat_appllcation import ChatApplication
 from components.services.youtube_summary_bot import YouTubeSummaryBot
-from components.services.youtube_service import YouTubeVideo, YouTubeService
+from components.services.youtube_service import YouTubeService
 from domain.models.agent_event import AgentEvent
 from domain.repositories.video_repository import VideoRepository, GetVideoArgsUrl, GetVideoArgsWorkspaceVideoId
+from logger_config import getLogger
 
 
 class WebChatApplication(ChatApplication):
@@ -17,6 +18,7 @@ class WebChatApplication(ChatApplication):
         self.on_event = on_event
         self.video_repostory = video_repository
         self.workspace_id = workspace_id
+        self.logger = getLogger(__name__)
 
     def watch_video(self, url) -> str:
         """returns a id, title of video, author"""
@@ -48,7 +50,7 @@ class WebChatApplication(ChatApplication):
 
     def list_videos(self) -> str:
         """returns a json with id, title of video, and author"""
-        print(f"list_videos()")
+
         videos = self.video_repostory.get_videos(self.workspace_id)
         if len(videos) == 0:
             return "no videos have been watched"
@@ -56,14 +58,14 @@ class WebChatApplication(ChatApplication):
 
     def get_transcript(self, id:int) -> str:
         """returns the complete transcript of a video"""
-        print(f"get_transcript{id}")
+
         getVideoArgs = GetVideoArgsWorkspaceVideoId(self.workspace_id, id)
         video = self.video_repostory.get_video(getVideoArgs)
         return video["transcript"]
 
     def get_summary(self, id:int) -> str:
         """returns a summary of the video"""
-        print(f"get_summary({id})")
+
         getVideoArgs = GetVideoArgsWorkspaceVideoId(self.workspace_id, id)
         video = self.video_repostory.get_video(getVideoArgs)
         summary = self.summary_bot.summarize_transcript(video["transcript"])
